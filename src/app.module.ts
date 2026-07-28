@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -8,9 +9,12 @@ import { ZodI18nExceptionFilter } from './shared/presentation/filters/zod-i18n-e
 import { ResponseTransformInterceptor } from './shared/presentation/interceptors/response-transformer.interceptor';
 import { SharedModule } from './shared/shared.module';
 
-
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
