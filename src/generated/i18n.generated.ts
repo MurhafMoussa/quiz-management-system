@@ -4,11 +4,6 @@
 /* prettier-ignore */
 import type { Path } from "nestjs-i18n";
 /* prettier-ignore */
-export type I18nTranslations = {
-    "auth": {
-        "INVALID_CREDENTIALS": string;
-        "PASSWORDS_DO_NOT_MATCH": string;
-    };
-};
+export type I18nTranslations = {};
 /* prettier-ignore */
 export type I18nPath = Path<I18nTranslations>;

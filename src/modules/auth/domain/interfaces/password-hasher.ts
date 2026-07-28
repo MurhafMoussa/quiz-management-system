@@ -1,4 +1,5 @@
-export abstract class PasswordHasher {
-    abstract hash(password: string): Promise<string>;
-    abstract compare(password: string, hash: string): Promise<boolean>;
+export const PASSWORD_HASHER_TOKEN = Symbol('PasswordHasher');
+export interface PasswordHasher {
+    hash(password: string): Promise<string>;
+    compare(password: string, hash: string): Promise<boolean>;
 }

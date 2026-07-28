@@ -2,8 +2,8 @@
 
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import * as constants from '../../domain/constants/validation-constants';
-import { USERNAME_MAX_LENGTH } from '../../domain/constants/validation-constants';
+import * as constants from '../../../../shared/domain/constants/validation-constants';
+import { USERNAME_MAX_LENGTH } from '../../../../shared/domain/constants/validation-constants';
 const RegisterUserSchema = z.object({
     username: z.string({ error: "validation.FIELD_REQUIRED" })
         .min(constants.USERNAME_MIN_LENGTH, { error: "validation.MIN_LENGTH" })

@@ -1,6 +1,7 @@
 import { User } from "../entities/user.entity";
 
-export abstract class UserRepository {
-    abstract findById(id: string): Promise<User | null>;
-    abstract save(user: User): Promise<void>;
+export const USER_REPOSITORY_TOKEN = Symbol('UserRepository');
+export interface UserRepository {
+    findByEmail(email: string): Promise<User | null>;
+    save(user: User): Promise<User>;
 }

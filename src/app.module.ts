@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
-import { ZodValidationPipe } from 'node_modules/nestjs-zod/dist/index.mjs';
+import { ZodValidationPipe } from 'nestjs-zod';
 import * as path from 'path';
 import { AuthModule } from './modules/auth/auth.module';
+import { ZodI18nExceptionFilter } from './shared/presentation/filters/zod-i18n-exception-filter';
+import { ResponseTransformInterceptor } from './shared/presentation/interceptors/response-transformer.interceptor';
+import { SharedModule } from './shared/shared.module';
 
 
 @Module({
@@ -18,14 +21,27 @@ import { AuthModule } from './modules/auth/auth.module';
         new QueryResolver(['lang']),
         AcceptLanguageResolver,
       ],
-      typesOutputPath: path.join(__dirname, '../src/generated/i18n.generated.ts'),
-    }), AuthModule,],
+      typesOutputPath: path.join(
+        process.cwd(),
+        'src/generated/i18n.generated.ts',
+      ),
+    }),
+    SharedModule,
+    AuthModule,],
   providers: [
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTransformInterceptor,
+    }, {
+      provide: APP_FILTER,
+      useClass: ZodI18nExceptionFilter,
+    },
   ],
+
 })
 export class AppModule { }
 
