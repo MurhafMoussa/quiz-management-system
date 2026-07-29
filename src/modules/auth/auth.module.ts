@@ -6,6 +6,7 @@ import { USER_REPOSITORY_TOKEN } from './domain/interfaces/user-repository';
 import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.repository';
 import { ArgonPasswordHasher } from './infrastructure/services/argon-password-hasher';
 import { AuthController } from './presentation/controllers/auth.controller';
+import { LoginHandler } from './application/handlers/login.handler';
 
 
 @Module({
@@ -13,6 +14,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
     controllers: [AuthController],
     providers: [
         RegisterHandler,
+        LoginHandler,
         {
             provide: PASSWORD_HASHER_TOKEN,
             useClass: ArgonPasswordHasher,
