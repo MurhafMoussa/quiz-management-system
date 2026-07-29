@@ -8,9 +8,9 @@
     "assets": [
       {
         "include": "locales/**/*",
-        "watchAssets": true,
-        "outDir": "dist/src/locales"
+        "outDir": "dist/src"
       }
-    ]
+    ],
+    "watchAssets": true
   }
 }

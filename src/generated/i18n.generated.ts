@@ -4,6 +4,23 @@
 /* prettier-ignore */
 import type { Path } from "nestjs-i18n";
 /* prettier-ignore */
-export type I18nTranslations = {};
+export type I18nTranslations = {
+    "auth": {
+        "INVALID_CREDENTIALS": string;
+        "EMAIL_ALREADY_EXISTS": string;
+        "USERNAME_ALREADY_EXISTS": string;
+        "USER_REGISTERED_SUCCESSFULLY": string;
+    };
+    "common": {
+        "INTERNAL_SERVER_ERROR": string;
+    };
+    "validation": {
+        "PASSWORDS_DO_NOT_MATCH": string;
+        "FIELD_REQUIRED": string;
+        "INVALID_EMAIL": string;
+        "MIN_LENGTH": string;
+        "MAX_LENGTH": string;
+    };
+};
 /* prettier-ignore */
 export type I18nPath = Path<I18nTranslations>;

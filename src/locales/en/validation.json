@@ -1,6 +1,7 @@
 {
         "PASSWORDS_DO_NOT_MATCH": "Password and confirm password fields do not match.",
-        "FIELD_REQUIRED": "{field} field is required.",
-        "MIN_LENGTH": "{field} field must be at least {min} characters long.",
-        "MAX_LENGTH": "{field} field must be at most {max} characters long."
+        "FIELD_REQUIRED": "this field is required.",
+        "INVALID_EMAIL": "this field must be a valid email address.",
+        "MIN_LENGTH": "this field must be at least {min} characters long.",
+        "MAX_LENGTH": "this field must be at most {max} characters long."
 }

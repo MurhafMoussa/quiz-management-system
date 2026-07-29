@@ -1,9 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ID_GENERATOR_TOKEN, type IdGenerator } from "src/shared/domain/interfaces/id-generator"; 
+import { ID_GENERATOR_TOKEN, type IdGenerator } from "src/shared/domain/interfaces/id-generator";
 import { User } from "../../domain/entities/user.entity";
 import { UserAlreadyExistException } from "../../domain/exceptions/user-already-exist.exception";
 import { PASSWORD_HASHER_TOKEN, type PasswordHasher } from "../../domain/interfaces/password-hasher";
 import { USER_REPOSITORY_TOKEN, type UserRepository } from "../../domain/interfaces/user-repository";
+import { AuthResponseDto } from "../dtos/auth-response.dto";
 import { RegisterUserDto } from "../dtos/register-user.dto";
 
 
@@ -16,7 +17,7 @@ export class RegisterHandler {
     ) {
     }
 
-    async handle(dto: RegisterUserDto): Promise<User> {
+    async handle(dto: RegisterUserDto): Promise<AuthResponseDto> {
         const existingUser = await this.userRepository.findByEmail(dto.email);
         if (existingUser) {
             throw new UserAlreadyExistException(dto.email);
@@ -29,7 +30,8 @@ export class RegisterHandler {
             email: dto.email,
             passwordHash,
         });
-       return await this.userRepository.save(user)
+        await this.userRepository.save(user)
+        return { user: { id: user.id, username: user.username, email: user.email } };
     }
 
 }
