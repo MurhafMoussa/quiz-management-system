@@ -10,6 +10,7 @@ export type I18nTranslations = {
         "EMAIL_ALREADY_EXISTS": string;
         "USERNAME_ALREADY_EXISTS": string;
         "USER_REGISTERED_SUCCESSFULLY": string;
+        "USER_LOGGED_IN_SUCCESSFULLY": string;
     };
     "common": {
         "INTERNAL_SERVER_ERROR": string;
