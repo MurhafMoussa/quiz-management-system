@@ -10,13 +10,17 @@ import { GlobalExceptionFilter } from './shared/presentation/filters/global-exce
 import { ZodI18nExceptionFilter } from './shared/presentation/filters/zod-i18n-exception.filter';
 import { ResponseTransformInterceptor } from './shared/presentation/interceptors/response-transformer.interceptor';
 import { SharedModule } from './shared/shared.module';
+import { validate } from './config/env.validation';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validate:validate
     }),
+
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
