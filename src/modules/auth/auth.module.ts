@@ -11,6 +11,7 @@ import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.
 import { ArgonPasswordHasher } from './infrastructure/services/argon-string-hasher';
 import { JwtTokenService } from './infrastructure/services/jwt.service';
 import { AuthController } from './presentation/controllers/auth.controller';
+import { RefreshTokenHandler } from './application/handlers/refresh-token.handler';
 
 
 @Module({
@@ -31,6 +32,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
     providers: [
         RegisterHandler,
         LoginHandler,
+        RefreshTokenHandler,
         {
             provide: HASHER_TOKEN,
             useClass: ArgonPasswordHasher,

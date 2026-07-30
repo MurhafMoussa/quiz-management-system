@@ -8,8 +8,17 @@ import { UserMapper } from '../mappers/user.mapper';
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
     constructor(private readonly prisma: PrismaService) { }
+    async findById(userId: string): Promise<User | null> {
+        const rawUser = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!rawUser) return null;
+
+        return UserMapper.toDomain(rawUser);
+    }
     async updateRefreshTokenHash(refreshTokenHash: string, userId: string): Promise<void> {
-        this.prisma.user.update({
+        await this.prisma.user.update({
             where: { id: userId },
             data: { refresh_token_hash: refreshTokenHash }
         })
