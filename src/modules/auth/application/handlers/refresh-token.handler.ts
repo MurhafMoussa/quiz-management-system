@@ -4,8 +4,6 @@ import { TOKEN_SERVICE_TOKEN, type TokenService } from "../../domain/interfaces/
 import { USER_REPOSITORY_TOKEN, type UserRepository } from "../../domain/interfaces/user-repository";
 import { InvalidRefreshTokenException } from "../../infrastructure/exceptions/invalid-refresh-token.exception";
 import { AuthResponseDto } from "../dtos/auth-response.dto";
-import { log } from "console";
-
 
 @Injectable()
 export class RefreshTokenHandler {
@@ -35,7 +33,7 @@ export class RefreshTokenHandler {
         const newHash = await this.hasher.hash(refreshToken);
         await this.userRepository.updateRefreshTokenHash(newHash, payload.userId);
         return {
-            refreshToken: oldRefreshToken,
+            refreshToken,
             accessToken,
             user: {
                 id: user.id,

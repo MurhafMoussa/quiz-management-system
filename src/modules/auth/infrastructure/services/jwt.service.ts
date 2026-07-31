@@ -33,14 +33,14 @@ export class JwtTokenService implements TokenService {
 
     async verifyRefreshToken(token: string): Promise<TokenPayload> {
         try {
-            return this.verifyToken(token, 'JWT_REFRESH_TOKEN_SECRET');
+            return await this.verifyToken(token, 'JWT_REFRESH_TOKEN_SECRET');
         } catch {
             throw new InvalidRefreshTokenException();
         }
     }
     async verifyAccessToken(token: string): Promise<TokenPayload> {
         try {
-            return this.verifyToken(token, 'JWT_ACCESS_TOKEN_SECRET');
+            return await this.verifyToken(token, 'JWT_ACCESS_TOKEN_SECRET');
         } catch {
             throw new InvalidAccessTokenException();
         }
