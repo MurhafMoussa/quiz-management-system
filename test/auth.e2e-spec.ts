@@ -209,7 +209,7 @@ describe('Auth Endpoints (e2e)', () => {
       });
     });
 
-    it('should fail with 401 Unauthorized when no Authorization header is present', async () => {
+    it('should fail with 401 Unauthorized when no authorization header is present', async () => {
       const response = await request(app.getHttpServer()).post('/auth/me');
 
       expect(response.status).toBe(401);
