@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { PasswordHasher } from "../../domain/interfaces/password-hasher";
 import * as argon2 from "argon2";
+import { Hasher } from "../../domain/interfaces/hasher";
 @Injectable()
-export class ArgonPasswordHasher implements PasswordHasher {
+export class ArgonPasswordHasher implements Hasher {
 
     hash(password: string): Promise<string> {
         return argon2.hash(password);

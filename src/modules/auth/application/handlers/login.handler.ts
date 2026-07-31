@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InvalidCredentialsException } from "../../domain/exceptions/invalid-credentials.exception";
-import { PASSWORD_HASHER_TOKEN, type PasswordHasher } from "../../domain/interfaces/password-hasher";
+import { HASHER_TOKEN, type Hasher } from "../../domain/interfaces/hasher";
+import { TOKEN_SERVICE_TOKEN, type TokenService } from "../../domain/interfaces/token.service";
 import { USER_REPOSITORY_TOKEN, type UserRepository } from "../../domain/interfaces/user-repository";
 import { AuthResponseDto } from "../dtos/auth-response.dto";
 import { LoginUserDto } from "../dtos/login-user.dto";
@@ -10,7 +11,9 @@ import { LoginUserDto } from "../dtos/login-user.dto";
 export class LoginHandler {
     constructor(
         @Inject(USER_REPOSITORY_TOKEN) private readonly userRepository: UserRepository,
-        @Inject(PASSWORD_HASHER_TOKEN) private readonly passwordHasher: PasswordHasher
+        @Inject(HASHER_TOKEN) private readonly hasher: Hasher,
+        @Inject(TOKEN_SERVICE_TOKEN) private readonly tokenService: TokenService
+
     ) {
     }
 
@@ -19,11 +22,25 @@ export class LoginHandler {
         if (!existingUser) {
             throw new InvalidCredentialsException();
         }
-        const passwordIsCorrect = await this.passwordHasher.compare(dto.password, existingUser.passwordHash);
+        const passwordIsCorrect = await this.hasher.compare(dto.password, existingUser.passwordHash);
         if (!passwordIsCorrect) {
             throw new InvalidCredentialsException();
         }
-        return { user: { id: existingUser.id, username: existingUser.username, email: existingUser.email } };
+        const { refreshToken, accessToken } = await this.tokenService.generateTokens({
+            email: existingUser.email,
+            userId: existingUser.id
+        });
+        const hashedRefreshToken = await this.hasher.hash(refreshToken);
+        await this.userRepository.updateRefreshTokenHash(hashedRefreshToken, existingUser.id)
+        return {
+            refreshToken,
+            accessToken,
+            user: {
+                id: existingUser.id,
+                username: existingUser.username,
+                email: existingUser.email
+            }
+        };
     }
 
 }
