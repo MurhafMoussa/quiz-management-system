@@ -86,6 +86,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!uuid)"
+    ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1",
       "^(\\.\\.?/.*)\\.js$": "$1"
