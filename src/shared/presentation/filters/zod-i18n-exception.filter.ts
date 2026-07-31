@@ -21,8 +21,6 @@ export class ZodI18nExceptionFilter implements ExceptionFilter {
 
         // 3. Map & translate issues
         const errors = issues.map((issue) => {
-            console.log(issue);
-
             const field = issue.path.join('.') || 'Field';
             const messageKey = issue.message;
 
@@ -35,16 +33,17 @@ export class ZodI18nExceptionFilter implements ExceptionFilter {
                 ...(maxVal !== undefined ? { max: maxVal } : {}),
             };
 
-
             const translatedMessage = i18n
                 ? i18n.t(messageKey, {
                     args: issueArgs,
                     defaultValue: messageKey,
                 })
-                : messageKey; return {
-                    field,
-                    message: translatedMessage,
-                };
+                : messageKey;
+
+            return {
+                field,
+                message: translatedMessage,
+            };
         });
         const statusCode = HttpStatus.BAD_REQUEST;
         const apiErrorResponse: ApiErrorResponse = {
