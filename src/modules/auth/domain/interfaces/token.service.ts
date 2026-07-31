@@ -4,4 +4,5 @@ export const TOKEN_SERVICE_TOKEN = Symbol('TokenService');
 export interface TokenService {
     generateTokens(payload: TokenPayload): Promise<AuthTokens>;
     verifyRefreshToken(token: string): Promise<TokenPayload>;
+    verifyAccessToken(token: string): Promise<TokenPayload>;
 }

@@ -12,6 +12,7 @@ import { ArgonPasswordHasher } from './infrastructure/services/argon-string-hash
 import { JwtTokenService } from './infrastructure/services/jwt.service';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { RefreshTokenHandler } from './application/handlers/refresh-token.handler';
+import { GetCurrentUserHandler } from './application/handlers/get-current-user.handler';
 
 
 @Module({
@@ -33,6 +34,7 @@ import { RefreshTokenHandler } from './application/handlers/refresh-token.handle
         RegisterHandler,
         LoginHandler,
         RefreshTokenHandler,
+        GetCurrentUserHandler,
         {
             provide: HASHER_TOKEN,
             useClass: ArgonPasswordHasher,

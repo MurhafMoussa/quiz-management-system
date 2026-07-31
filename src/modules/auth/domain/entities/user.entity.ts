@@ -64,7 +64,6 @@ export class User {
         return this._refreshTokenHash;
     }
     changeUsername(username: string) {
-
         this._username = username;
         this.touch();
     }
@@ -75,6 +74,10 @@ export class User {
     }
     changeRefreshToken(refreshTokenHash: string) {
         this._refreshTokenHash = refreshTokenHash;
+        this.touch();
+    }
+    clearRefreshToken() {
+        this._refreshTokenHash = undefined;
         this.touch();
     }
 
