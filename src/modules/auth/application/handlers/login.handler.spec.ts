@@ -1,8 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoginHandler } from './login.handler';
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../../domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../../domain/interfaces/user-repository';
 import { HASHER_TOKEN, Hasher } from '../../domain/interfaces/hasher';
-import { TOKEN_SERVICE_TOKEN, TokenService } from '../../domain/interfaces/token.service';
+import {
+  TOKEN_SERVICE_TOKEN,
+  TokenService,
+} from '../../domain/interfaces/token.service';
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
 import { User } from '../../domain/entities/user.entity';
 
@@ -71,10 +77,8 @@ describe('LoginHandler', () => {
       email: mockUser.email,
       userId: mockUser.id,
     });
-    expect(userRepository.updateRefreshTokenHash).toHaveBeenCalledWith(
-      'hashed-ref-token',
-      mockUser.id,
-    );
+    expect(userRepository.save).toHaveBeenCalledWith(mockUser);
+    expect(mockUser.refreshTokenHash).toBe('hashed-ref-token');
     expect(result).toEqual({
       accessToken: 'acc-token',
       refreshToken: 'ref-token',

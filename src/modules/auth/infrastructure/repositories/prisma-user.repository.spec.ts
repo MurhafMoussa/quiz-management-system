@@ -10,6 +10,7 @@ describe('PrismaUserRepository', () => {
       findUnique: jest.Mock;
       update: jest.Mock;
       create: jest.Mock;
+      upsert: jest.Mock;
     };
   };
 
@@ -19,6 +20,7 @@ describe('PrismaUserRepository', () => {
         findUnique: jest.fn(),
         update: jest.fn(),
         create: jest.fn(),
+        upsert: jest.fn(),
       },
     };
 
@@ -46,7 +48,9 @@ describe('PrismaUserRepository', () => {
 
     const result = await repository.findById('u-1');
 
-    expect(prismaService.user.findUnique).toHaveBeenCalledWith({ where: { id: 'u-1' } });
+    expect(prismaService.user.findUnique).toHaveBeenCalledWith({
+      where: { id: 'u-1' },
+    });
     expect(result).toBeInstanceOf(User);
     expect(result?.id).toBe('u-1');
   });
@@ -72,7 +76,9 @@ describe('PrismaUserRepository', () => {
 
     const result = await repository.findByEmail('john@example.com');
 
-    expect(prismaService.user.findUnique).toHaveBeenCalledWith({ where: { email: 'john@example.com' } });
+    expect(prismaService.user.findUnique).toHaveBeenCalledWith({
+      where: { email: 'john@example.com' },
+    });
     expect(result).toBeInstanceOf(User);
   });
 
@@ -106,11 +112,15 @@ describe('PrismaUserRepository', () => {
       updated_at: domainUser.updatedAt,
     };
 
-    prismaService.user.create.mockResolvedValue(rawSavedUser);
+    prismaService.user.upsert.mockResolvedValue(rawSavedUser);
 
     const result = await repository.save(domainUser);
 
-    expect(prismaService.user.create).toHaveBeenCalled();
+    expect(prismaService.user.upsert).toHaveBeenCalledWith({
+      where: { id: domainUser.id },
+      create: expect.any(Object),
+      update: expect.any(Object),
+    });
     expect(result).toBeInstanceOf(User);
     expect(result.id).toBe('u-1');
   });

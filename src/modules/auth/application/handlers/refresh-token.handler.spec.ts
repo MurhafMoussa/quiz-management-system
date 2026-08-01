@@ -1,8 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RefreshTokenHandler } from './refresh-token.handler';
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../../domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../../domain/interfaces/user-repository';
 import { HASHER_TOKEN, Hasher } from '../../domain/interfaces/hasher';
-import { TOKEN_SERVICE_TOKEN, TokenService } from '../../domain/interfaces/token.service';
+import {
+  TOKEN_SERVICE_TOKEN,
+  TokenService,
+} from '../../domain/interfaces/token.service';
 import { InvalidRefreshTokenException } from '../../infrastructure/exceptions/invalid-refresh-token.exception';
 import { User } from '../../domain/entities/user.entity';
 
@@ -67,10 +73,16 @@ describe('RefreshTokenHandler', () => {
 
     const result = await handler.handle(oldRefreshToken);
 
-    expect(tokenService.verifyRefreshToken).toHaveBeenCalledWith(oldRefreshToken);
+    expect(tokenService.verifyRefreshToken).toHaveBeenCalledWith(
+      oldRefreshToken,
+    );
     expect(userRepository.findById).toHaveBeenCalledWith('user-id-1');
-    expect(hasher.compare).toHaveBeenCalledWith(oldRefreshToken, 'stored-hashed-refresh');
-    expect(userRepository.updateRefreshTokenHash).toHaveBeenCalledWith('new-hashed-refresh', 'user-id-1');
+    expect(hasher.compare).toHaveBeenCalledWith(
+      oldRefreshToken,
+      'stored-hashed-refresh',
+    );
+    expect(userRepository.save).toHaveBeenCalledWith(mockUser);
+    expect(mockUser.refreshTokenHash).toBe('new-hashed-refresh');
     expect(result).toEqual({
       refreshToken: 'new-refresh-token',
       accessToken: 'new-access-token',
@@ -83,10 +95,15 @@ describe('RefreshTokenHandler', () => {
   });
 
   it('should throw InvalidRefreshTokenException if user or user.refreshTokenHash is missing', async () => {
-    tokenService.verifyRefreshToken.mockResolvedValue({ userId: 'u-1', email: 'a@b.com' });
+    tokenService.verifyRefreshToken.mockResolvedValue({
+      userId: 'u-1',
+      email: 'a@b.com',
+    });
     userRepository.findById.mockResolvedValue(null);
 
-    await expect(handler.handle('some-token')).rejects.toThrow(InvalidRefreshTokenException);
+    await expect(handler.handle('some-token')).rejects.toThrow(
+      InvalidRefreshTokenException,
+    );
   });
 
   it('should throw InvalidRefreshTokenException if refresh tokens do not match', async () => {
@@ -100,10 +117,15 @@ describe('RefreshTokenHandler', () => {
       updatedAt: new Date(),
     });
 
-    tokenService.verifyRefreshToken.mockResolvedValue({ userId: 'u-1', email: 'john@example.com' });
+    tokenService.verifyRefreshToken.mockResolvedValue({
+      userId: 'u-1',
+      email: 'john@example.com',
+    });
     userRepository.findById.mockResolvedValue(mockUser);
     hasher.compare.mockResolvedValue(false);
 
-    await expect(handler.handle('wrong-token')).rejects.toThrow(InvalidRefreshTokenException);
+    await expect(handler.handle('wrong-token')).rejects.toThrow(
+      InvalidRefreshTokenException,
+    );
   });
 });
