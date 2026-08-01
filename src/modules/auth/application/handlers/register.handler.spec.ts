@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RegisterHandler } from './register.handler';
 import {
   USER_REPOSITORY_TOKEN,
@@ -22,8 +23,12 @@ describe('RegisterHandler', () => {
   let hasher: jest.Mocked<Hasher>;
   let tokenService: jest.Mocked<TokenService>;
   let idGenerator: jest.Mocked<IdGenerator>;
+  let eventEmitter: { emit: jest.Mock };
 
   beforeEach(async () => {
+    eventEmitter = {
+      emit: jest.fn(),
+    };
     userRepository = {
       findByEmail: jest.fn(),
       findById: jest.fn(),
@@ -52,6 +57,7 @@ describe('RegisterHandler', () => {
         { provide: HASHER_TOKEN, useValue: hasher },
         { provide: TOKEN_SERVICE_TOKEN, useValue: tokenService },
         { provide: ID_GENERATOR_TOKEN, useValue: idGenerator },
+        { provide: EventEmitter2, useValue: eventEmitter },
       ],
     }).compile();
 
