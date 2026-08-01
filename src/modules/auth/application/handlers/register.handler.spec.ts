@@ -16,6 +16,8 @@ import {
 } from 'src/shared/domain/interfaces/id-generator';
 import { UserAlreadyExistException } from '../../domain/exceptions/user-already-exist.exception';
 import { User } from '../../domain/entities/user.entity';
+import { UserRegisteredEvent } from '../../domain/events/user-registered.event';
+import { DomainEventsNames } from 'src/shared/domain/constants/domain-events-names.enum';
 
 describe('RegisterHandler', () => {
   let handler: RegisterHandler;
@@ -93,6 +95,10 @@ describe('RegisterHandler', () => {
     });
     expect(hasher.hash).toHaveBeenNthCalledWith(2, 'refresh-token');
     expect(userRepository.save).toHaveBeenCalledWith(expect.any(User));
+    expect(eventEmitter.emit).toHaveBeenCalledWith(
+      DomainEventsNames.USER_REGISTERED,
+      expect.any(UserRegisteredEvent),
+    );
     expect(result).toEqual({
       accessToken: 'access-token',
       refreshToken: 'refresh-token',

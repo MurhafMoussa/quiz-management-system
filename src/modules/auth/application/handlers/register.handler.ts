@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DomainEventsNames } from 'src/shared/domain/constants/domain-events-names.enum';
 import {
   ID_GENERATOR_TOKEN,
   type IdGenerator,
@@ -47,8 +48,9 @@ export class RegisterHandler {
       refreshTokenHash: hashedRefreshToken,
     });
     await this.userRepository.save(user);
-    user.domainEvents.forEach((event) =>
-      this.eventEmitter.emit(event.constructor.name, event),
+    const events = user.pullDomainEvents();
+    events.forEach((event) =>
+      this.eventEmitter.emit(DomainEventsNames.USER_REGISTERED, event),
     );
     return {
       refreshToken,
