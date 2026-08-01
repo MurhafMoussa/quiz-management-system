@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import {
@@ -17,8 +17,29 @@ import { GlobalExceptionFilter } from './shared/presentation/filters/global-exce
 import { ZodI18nExceptionFilter } from './shared/presentation/filters/zod-i18n-exception.filter';
 import { ResponseTransformInterceptor } from './shared/presentation/interceptors/response-transformer.interceptor';
 import { SharedModule } from './shared/shared.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import KeyvRedis from '@keyv/redis';
+import { Keyv } from 'keyv';
+import { TimeUtils } from './shared/utils/time.utils';
 @Module({
   imports: [
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const host = configService.get<string>('REDIS_HOST', 'localhost');
+        const port = configService.get<number>('REDIS_PORT', 6379);
+        const password = configService.get<string>('REDIS_PASSWORD');
+        const auth = password ? `:${password}@` : '';
+        const redisUrl = `redis://${auth}${host}:${port}`;
+
+        return {
+          stores: [new Keyv({ store: new KeyvRedis(redisUrl) })],
+          ttl: TimeUtils.convertMinutesToMilliseconds(15),
+        };
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
