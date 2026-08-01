@@ -27,15 +27,21 @@ describe('PrismaService', () => {
 
   it('should throw an error if DATABASE_URL environment variable is missing', () => {
     delete process.env.DATABASE_URL;
-    expect(() => new PrismaService()).toThrow('DATABASE_URL environment variable is missing.');
+    expect(() => new PrismaService()).toThrow(
+      'DATABASE_URL environment variable is missing.',
+    );
   });
 
   it('should call $connect on module init and $disconnect on module destroy', async () => {
     process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db';
-    
+
     // Test methods on prototype safely without triggering Prisma engine initialization
-    const onModuleInitSpy = jest.spyOn(PrismaService.prototype, '$connect').mockResolvedValue(undefined as never);
-    const onModuleDestroySpy = jest.spyOn(PrismaService.prototype, '$disconnect').mockResolvedValue(undefined as never);
+    const onModuleInitSpy = jest
+      .spyOn(PrismaService.prototype, '$connect')
+      .mockResolvedValue(undefined);
+    const onModuleDestroySpy = jest
+      .spyOn(PrismaService.prototype, '$disconnect')
+      .mockResolvedValue(undefined);
 
     const service = Object.create(PrismaService.prototype);
 

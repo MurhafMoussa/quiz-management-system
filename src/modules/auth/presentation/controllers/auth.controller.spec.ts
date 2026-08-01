@@ -41,7 +41,12 @@ describe('AuthController', () => {
   });
 
   it('should call registerHandler on register()', async () => {
-    const dto = { username: 'john', email: 'john@example.com', password: 'pass', confirmPassword: 'pass' };
+    const dto = {
+      username: 'john',
+      email: 'john@example.com',
+      password: 'pass',
+      confirmPassword: 'pass',
+    };
     const expectedResponse = {
       accessToken: 'acc',
       refreshToken: 'ref',
@@ -87,7 +92,11 @@ describe('AuthController', () => {
 
   it('should call getCurrentUserHandler on getCurrentUser()', async () => {
     const payload = { userId: 'u-1', email: 'john@example.com' };
-    const expectedResponse = { id: 'u-1', username: 'john', email: 'john@example.com' };
+    const expectedResponse = {
+      id: 'u-1',
+      username: 'john',
+      email: 'john@example.com',
+    };
     getCurrentUserHandler.handle.mockResolvedValue(expectedResponse);
 
     const result = await controller.getCurrentUser(payload);

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { JwtTokenService } from '../../src/modules/auth/infrastructure/services/jwt.service';
 import { InvalidAccessTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-access-token.exception';
 import { InvalidRefreshTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-refresh-token.exception';
@@ -33,7 +33,9 @@ describe('JwtTokenService Integration', () => {
     expect(tokens.refreshToken).toBeDefined();
     expect(tokens.accessToken).not.toEqual(tokens.refreshToken);
 
-    const verifiedAccess = await tokenService.verifyAccessToken(tokens.accessToken);
+    const verifiedAccess = await tokenService.verifyAccessToken(
+      tokens.accessToken,
+    );
     expect(verifiedAccess.userId).toBe(payload.userId);
     expect(verifiedAccess.email).toBe(payload.email);
   });
@@ -42,7 +44,9 @@ describe('JwtTokenService Integration', () => {
     const payload = { userId: 'user-uuid-v7', email: 'test@example.com' };
     const tokens = await tokenService.generateTokens(payload);
 
-    const verifiedRefresh = await tokenService.verifyRefreshToken(tokens.refreshToken);
+    const verifiedRefresh = await tokenService.verifyRefreshToken(
+      tokens.refreshToken,
+    );
     expect(verifiedRefresh.userId).toBe(payload.userId);
     expect(verifiedRefresh.email).toBe(payload.email);
   });
@@ -51,17 +55,17 @@ describe('JwtTokenService Integration', () => {
     const payload = { userId: 'user-uuid-v7', email: 'test@example.com' };
     const tokens = await tokenService.generateTokens(payload);
 
-    await expect(tokenService.verifyRefreshToken(tokens.accessToken)).rejects.toThrow(
-      InvalidRefreshTokenException,
-    );
+    await expect(
+      tokenService.verifyRefreshToken(tokens.accessToken),
+    ).rejects.toThrow(InvalidRefreshTokenException);
   });
 
   it('should reject tampered or malformed tokens', async () => {
-    await expect(tokenService.verifyAccessToken('invalid.jwt.token')).rejects.toThrow(
-      InvalidAccessTokenException,
-    );
-    await expect(tokenService.verifyRefreshToken('invalid.jwt.token')).rejects.toThrow(
-      InvalidRefreshTokenException,
-    );
+    await expect(
+      tokenService.verifyAccessToken('invalid.jwt.token'),
+    ).rejects.toThrow(InvalidAccessTokenException);
+    await expect(
+      tokenService.verifyRefreshToken('invalid.jwt.token'),
+    ).rejects.toThrow(InvalidRefreshTokenException);
   });
 });

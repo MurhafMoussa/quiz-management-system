@@ -55,7 +55,10 @@ describe('JwtTokenService', () => {
       secret: 'refresh-secret',
       expiresIn: 86400,
     });
-    expect(result).toEqual({ accessToken: 'acc-token', refreshToken: 'ref-token' });
+    expect(result).toEqual({
+      accessToken: 'acc-token',
+      refreshToken: 'ref-token',
+    });
   });
 
   it('should verify access token successfully', async () => {

@@ -1,7 +1,10 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthGuard } from './auth.guard';
-import { TOKEN_SERVICE_TOKEN, TokenService } from '../../domain/interfaces/token.service';
+import {
+  TOKEN_SERVICE_TOKEN,
+  TokenService,
+} from '../../domain/interfaces/token.service';
 
 describe('AuthGuard', () => {
   let guard: AuthGuard;
@@ -24,7 +27,9 @@ describe('AuthGuard', () => {
     guard = module.get<AuthGuard>(AuthGuard);
   });
 
-  const createMockContext = (authorizationHeader?: string): ExecutionContext => {
+  const createMockContext = (
+    authorizationHeader?: string,
+  ): ExecutionContext => {
     const request: any = {
       headers: {
         authorization: authorizationHeader,
@@ -53,12 +58,16 @@ describe('AuthGuard', () => {
   it('should throw UnauthorizedException if authorization header is missing', async () => {
     const context = createMockContext(undefined);
 
-    await expect(guard.canActivate(context)).rejects.toThrow(UnauthorizedException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      UnauthorizedException,
+    );
   });
 
   it('should throw UnauthorizedException if authorization scheme is not Bearer', async () => {
     const context = createMockContext('Basic token123');
 
-    await expect(guard.canActivate(context)).rejects.toThrow(UnauthorizedException);
+    await expect(guard.canActivate(context)).rejects.toThrow(
+      UnauthorizedException,
+    );
   });
 });

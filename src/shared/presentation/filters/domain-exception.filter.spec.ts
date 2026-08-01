@@ -56,7 +56,9 @@ describe('DomainExceptionFilter', () => {
     const exception = new TestDomainException();
     filter.catch(exception, mockArgumentsHost);
 
-    expect(mockI18n.t).toHaveBeenCalledWith('auth.USER_ALREADY_EXISTS', { args: { user: 'John' } });
+    expect(mockI18n.t).toHaveBeenCalledWith('auth.USER_ALREADY_EXISTS', {
+      args: { user: 'John' },
+    });
     expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
     expect(mockResponse.json).toHaveBeenCalledWith({
       success: false,

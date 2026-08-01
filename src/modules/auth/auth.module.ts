@@ -14,39 +14,38 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { RefreshTokenHandler } from './application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from './application/handlers/get-current-user.handler';
 
-
 @Module({
-    imports: [SharedModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
-                signOptions: {
-                    expiresIn: configService.get<string>('JWT_ACCESS_TOKEN_EXPIRATION_MS',) as any,
-
-                }
-            }),
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [
-        RegisterHandler,
-        LoginHandler,
-        RefreshTokenHandler,
-        GetCurrentUserHandler,
-        {
-            provide: HASHER_TOKEN,
-            useClass: ArgonPasswordHasher,
+  imports: [
+    SharedModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        signOptions: {
+          expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRATION_MS'),
         },
-        {
-            provide: USER_REPOSITORY_TOKEN,
-            useClass: PrismaUserRepository,
-        },
-        {
-            provide: TOKEN_SERVICE_TOKEN,
-            useClass: JwtTokenService,
-        },
-    ],
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [
+    RegisterHandler,
+    LoginHandler,
+    RefreshTokenHandler,
+    GetCurrentUserHandler,
+    {
+      provide: HASHER_TOKEN,
+      useClass: ArgonPasswordHasher,
+    },
+    {
+      provide: USER_REPOSITORY_TOKEN,
+      useClass: PrismaUserRepository,
+    },
+    {
+      provide: TOKEN_SERVICE_TOKEN,
+      useClass: JwtTokenService,
+    },
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}

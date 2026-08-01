@@ -2,13 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../src/modules/auth/domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../src/modules/auth/domain/interfaces/user-repository';
 import { User } from '../src/modules/auth/domain/entities/user.entity';
 import { PrismaService } from '../src/shared/infrastructure/services/prisma.service';
 
 describe('Auth Endpoints (e2e)', () => {
   let app: INestApplication;
-  let inMemoryUsers: Map<string, User> = new Map();
+  const inMemoryUsers: Map<string, User> = new Map();
 
   const mockUserRepository: UserRepository = {
     async findByEmail(email: string): Promise<User | null> {
@@ -24,7 +27,10 @@ describe('Auth Endpoints (e2e)', () => {
       inMemoryUsers.set(user.id, user);
       return user;
     },
-    async updateRefreshTokenHash(refreshTokenHash: string, userId: string): Promise<void> {
+    async updateRefreshTokenHash(
+      refreshTokenHash: string,
+      userId: string,
+    ): Promise<void> {
       const existing = inMemoryUsers.get(userId);
       if (existing) {
         existing.changeRefreshToken(refreshTokenHash);
@@ -42,7 +48,8 @@ describe('Auth Endpoints (e2e)', () => {
     process.env.PORT = '3000';
     process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/test_db';
     process.env.JWT_ACCESS_TOKEN_SECRET = 'super-secret-access-token-key-12345';
-    process.env.JWT_REFRESH_TOKEN_SECRET = 'super-secret-refresh-token-key-12345';
+    process.env.JWT_REFRESH_TOKEN_SECRET =
+      'super-secret-refresh-token-key-12345';
     process.env.JWT_ACCESS_TOKEN_EXPIRATION_MS = '3600000';
     process.env.JWT_REFRESH_TOKEN_EXPIRATION_MS = '86400000';
 
@@ -126,7 +133,9 @@ describe('Auth Endpoints (e2e)', () => {
       };
 
       // Register once
-      await request(app.getHttpServer()).post('/auth/register').send(registerPayload);
+      await request(app.getHttpServer())
+        .post('/auth/register')
+        .send(registerPayload);
 
       // Register again with same email
       const response = await request(app.getHttpServer())

@@ -28,7 +28,7 @@ describe('GlobalExceptionFilter', () => {
   });
 
   it('should return early if host context is not http', () => {
-    mockArgumentsHost.getType.mockReturnValue('rpc' as any);
+    mockArgumentsHost.getType.mockReturnValue('rpc');
     filter.catch(new Error('Some error'), mockArgumentsHost);
     expect(mockResponse.status).not.toHaveBeenCalled();
   });
@@ -87,7 +87,10 @@ describe('GlobalExceptionFilter', () => {
     };
     (I18nContext.current as jest.Mock).mockReturnValue(mockI18n);
 
-    const httpException = new HttpException('common.NOT_FOUND', HttpStatus.NOT_FOUND);
+    const httpException = new HttpException(
+      'common.NOT_FOUND',
+      HttpStatus.NOT_FOUND,
+    );
 
     filter.catch(httpException, mockArgumentsHost);
 
@@ -107,6 +110,8 @@ describe('GlobalExceptionFilter', () => {
 
     filter.catch('String exception', mockArgumentsHost);
 
-    expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+    expect(mockResponse.status).toHaveBeenCalledWith(
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   });
 });
