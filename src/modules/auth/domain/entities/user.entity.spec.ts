@@ -1,7 +1,8 @@
 import { User } from './user.entity';
+import { UserRegisteredEvent } from '../events/user-registered.event';
 
 describe('User Domain Entity', () => {
-  it('should create a new user entity using create()', () => {
+  it('should create a new user entity using create() and record UserRegisteredEvent', () => {
     const params = {
       id: 'id-1',
       username: 'john',
@@ -19,9 +20,16 @@ describe('User Domain Entity', () => {
     expect(user.refreshTokenHash).toBeUndefined();
     expect(user.createdAt).toBeInstanceOf(Date);
     expect(user.updatedAt).toBeInstanceOf(Date);
+
+    expect(user.domainEvents).toHaveLength(1);
+    const event = user.domainEvents[0] as UserRegisteredEvent;
+    expect(event).toBeInstanceOf(UserRegisteredEvent);
+    expect(event.userId).toBe('id-1');
+    expect(event.username).toBe('john');
+    expect(event.email).toBe('john@example.com');
   });
 
-  it('should rehydrate an existing user entity using rehydrate()', () => {
+  it('should rehydrate an existing user entity using rehydrate() without recording domain events', () => {
     const createdAt = new Date('2024-01-01');
     const updatedAt = new Date('2024-01-02');
 
@@ -39,6 +47,7 @@ describe('User Domain Entity', () => {
     expect(user.createdAt).toEqual(createdAt);
     expect(user.updatedAt).toEqual(updatedAt);
     expect(user.refreshTokenHash).toBe('refresh123');
+    expect(user.domainEvents).toHaveLength(0);
   });
 
   it('should update username, password, refresh token and touch updatedAt', () => {
