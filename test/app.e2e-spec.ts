@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/shared/infrastructure/services/prisma.service';
 
@@ -11,7 +10,8 @@ describe('App Bootstrap (e2e)', () => {
     process.env.PORT = '3000';
     process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/test_db';
     process.env.JWT_ACCESS_TOKEN_SECRET = 'super-secret-access-token-key-12345';
-    process.env.JWT_REFRESH_TOKEN_SECRET = 'super-secret-refresh-token-key-12345';
+    process.env.JWT_REFRESH_TOKEN_SECRET =
+      'super-secret-refresh-token-key-12345';
     process.env.JWT_ACCESS_TOKEN_EXPIRATION_MS = '3600000';
     process.env.JWT_REFRESH_TOKEN_EXPIRATION_MS = '86400000';
 

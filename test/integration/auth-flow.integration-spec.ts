@@ -7,7 +7,10 @@ import { LoginHandler } from '../../src/modules/auth/application/handlers/login.
 import { RefreshTokenHandler } from '../../src/modules/auth/application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from '../../src/modules/auth/application/handlers/get-current-user.handler';
 
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../../src/modules/auth/domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../../src/modules/auth/domain/interfaces/user-repository';
 import { HASHER_TOKEN } from '../../src/modules/auth/domain/interfaces/hasher';
 import { TOKEN_SERVICE_TOKEN } from '../../src/modules/auth/domain/interfaces/token.service';
 import { ID_GENERATOR_TOKEN } from '../../src/shared/domain/interfaces/id-generator';
@@ -43,7 +46,10 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
       inMemoryUsers.set(user.id, user);
       return user;
     },
-    async updateRefreshTokenHash(refreshTokenHash: string, userId: string): Promise<void> {
+    async updateRefreshTokenHash(
+      refreshTokenHash: string,
+      userId: string,
+    ): Promise<void> {
       const user = inMemoryUsers.get(userId);
       if (user) {
         user.changeRefreshToken(refreshTokenHash);
@@ -52,8 +58,10 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
   };
 
   beforeAll(async () => {
-    process.env.JWT_ACCESS_TOKEN_SECRET = 'integration-test-access-secret-12345';
-    process.env.JWT_REFRESH_TOKEN_SECRET = 'integration-test-refresh-secret-12345';
+    process.env.JWT_ACCESS_TOKEN_SECRET =
+      'integration-test-access-secret-12345';
+    process.env.JWT_REFRESH_TOKEN_SECRET =
+      'integration-test-refresh-secret-12345';
     process.env.JWT_ACCESS_TOKEN_EXPIRATION_MS = '3600000';
     process.env.JWT_REFRESH_TOKEN_EXPIRATION_MS = '86400000';
 
@@ -77,7 +85,9 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     registerHandler = module.get<RegisterHandler>(RegisterHandler);
     loginHandler = module.get<LoginHandler>(LoginHandler);
     refreshTokenHandler = module.get<RefreshTokenHandler>(RefreshTokenHandler);
-    getCurrentUserHandler = module.get<GetCurrentUserHandler>(GetCurrentUserHandler);
+    getCurrentUserHandler = module.get<GetCurrentUserHandler>(
+      GetCurrentUserHandler,
+    );
   });
 
   beforeEach(() => {
@@ -110,7 +120,9 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     expect(profile.username).toBe('alice');
 
     // 4. Refresh Token (Token Rotation)
-    const refreshResult = await refreshTokenHandler.handle(loginResult.refreshToken);
+    const refreshResult = await refreshTokenHandler.handle(
+      loginResult.refreshToken,
+    );
     expect(refreshResult.accessToken).toBeDefined();
     expect(refreshResult.refreshToken).toBeDefined();
     expect(refreshResult.refreshToken).not.toBe(loginResult.refreshToken);

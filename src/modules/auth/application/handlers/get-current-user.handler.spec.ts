@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GetCurrentUserHandler } from './get-current-user.handler';
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../../domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../../domain/interfaces/user-repository';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-dound-domain.exception';
 import { User } from '../../domain/entities/user.entity';
 

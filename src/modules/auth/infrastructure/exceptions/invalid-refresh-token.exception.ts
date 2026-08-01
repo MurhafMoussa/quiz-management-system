@@ -1,7 +1,7 @@
-import { UnauthorizedException } from "@nestjs/common";
+import { UnauthorizedException } from '@nestjs/common';
 
-export class InvalidRefreshTokenException extends UnauthorizedException{
-    constructor() {
-        super('auth.INVALID_REFRESH_TOKEN'); 
-    }
+export class InvalidRefreshTokenException extends UnauthorizedException {
+  constructor() {
+    super('auth.INVALID_REFRESH_TOKEN');
+  }
 }

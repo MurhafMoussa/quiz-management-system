@@ -55,7 +55,9 @@ describe('User Domain Entity', () => {
 
     user.changeUsername('newname');
     expect(user.username).toBe('newname');
-    expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(initialDate.getTime());
+    expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(
+      initialDate.getTime(),
+    );
 
     user.changePassword('newhash');
     expect(user.passwordHash).toBe('newhash');

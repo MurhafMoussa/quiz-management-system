@@ -1,9 +1,12 @@
-import { User } from "../entities/user.entity";
+import { User } from '../entities/user.entity';
 
 export const USER_REPOSITORY_TOKEN = Symbol('UserRepository');
 export interface UserRepository {
-    findById(userId: string): Promise<User | null>;
-    findByEmail(email: string): Promise<User | null>;
-    updateRefreshTokenHash(refreshTokenHash: string,userId:string): Promise<void>;
-    save(user: User): Promise<User>;
+  findById(userId: string): Promise<User | null>;
+  findByEmail(email: string): Promise<User | null>;
+  updateRefreshTokenHash(
+    refreshTokenHash: string,
+    userId: string,
+  ): Promise<void>;
+  save(user: User): Promise<User>;
 }

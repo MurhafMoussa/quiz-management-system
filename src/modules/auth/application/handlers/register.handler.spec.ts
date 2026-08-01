@@ -1,9 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RegisterHandler } from './register.handler';
-import { USER_REPOSITORY_TOKEN, UserRepository } from '../../domain/interfaces/user-repository';
+import {
+  USER_REPOSITORY_TOKEN,
+  UserRepository,
+} from '../../domain/interfaces/user-repository';
 import { HASHER_TOKEN, Hasher } from '../../domain/interfaces/hasher';
-import { TOKEN_SERVICE_TOKEN, TokenService } from '../../domain/interfaces/token.service';
-import { ID_GENERATOR_TOKEN, IdGenerator } from 'src/shared/domain/interfaces/id-generator';
+import {
+  TOKEN_SERVICE_TOKEN,
+  TokenService,
+} from '../../domain/interfaces/token.service';
+import {
+  ID_GENERATOR_TOKEN,
+  IdGenerator,
+} from 'src/shared/domain/interfaces/id-generator';
 import { UserAlreadyExistException } from '../../domain/exceptions/user-already-exist.exception';
 import { User } from '../../domain/entities/user.entity';
 

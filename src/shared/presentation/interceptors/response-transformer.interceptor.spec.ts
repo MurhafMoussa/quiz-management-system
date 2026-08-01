@@ -60,7 +60,9 @@ describe('ResponseTransformInterceptor', () => {
     reflector.get.mockReturnValue('auth.USER_REGISTERED_SUCCESSFULLY');
 
     interceptor.intercept(mockContext, mockCallHandler).subscribe((result) => {
-      expect(mockI18n.t).toHaveBeenCalledWith('auth.USER_REGISTERED_SUCCESSFULLY');
+      expect(mockI18n.t).toHaveBeenCalledWith(
+        'auth.USER_REGISTERED_SUCCESSFULLY',
+      );
       expect(result).toEqual({
         success: true,
         statusCode: 200,
