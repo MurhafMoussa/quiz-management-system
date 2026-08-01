@@ -82,17 +82,6 @@ describe('PrismaUserRepository', () => {
     expect(result).toBeInstanceOf(User);
   });
 
-  it('should update refresh token hash', async () => {
-    prismaService.user.update.mockResolvedValue({});
-
-    await repository.updateRefreshTokenHash('newHash', 'u-1');
-
-    expect(prismaService.user.update).toHaveBeenCalledWith({
-      where: { id: 'u-1' },
-      data: { refresh_token_hash: 'newHash' },
-    });
-  });
-
   it('should save domain user to database and return saved domain entity', async () => {
     const domainUser = User.create({
       id: 'u-1',

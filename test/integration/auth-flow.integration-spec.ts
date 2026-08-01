@@ -46,15 +46,6 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
       inMemoryUsers.set(user.id, user);
       return user;
     },
-    async updateRefreshTokenHash(
-      refreshTokenHash: string,
-      userId: string,
-    ): Promise<void> {
-      const user = inMemoryUsers.get(userId);
-      if (user) {
-        user.changeRefreshToken(refreshTokenHash);
-      }
-    },
   };
 
   beforeAll(async () => {

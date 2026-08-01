@@ -23,7 +23,6 @@ describe('RefreshTokenHandler', () => {
       findByEmail: jest.fn(),
       findById: jest.fn(),
       save: jest.fn(),
-      updateRefreshTokenHash: jest.fn(),
     };
 
     hasher = {

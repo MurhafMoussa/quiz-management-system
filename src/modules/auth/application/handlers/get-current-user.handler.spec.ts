@@ -16,7 +16,6 @@ describe('GetCurrentUserHandler', () => {
       findByEmail: jest.fn(),
       findById: jest.fn(),
       save: jest.fn(),
-      updateRefreshTokenHash: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
