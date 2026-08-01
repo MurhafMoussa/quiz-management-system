@@ -11,15 +11,15 @@ jobs:
     name: Build, Lint & Test
     runs-on: ubuntu-latest
 
-    # Injected exclusively from GitHub Repository Secrets
+    # Environment variables for CI execution targeting local postgres service container
     env:
       NODE_ENV: test
-      PORT: ${{ secrets.PORT }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      JWT_ACCESS_TOKEN_SECRET: ${{ secrets.JWT_ACCESS_TOKEN_SECRET }}
-      JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
-      JWT_ACCESS_TOKEN_EXPIRATION_MS: ${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_MS }}
-      JWT_REFRESH_TOKEN_EXPIRATION_MS: ${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_MS }}
+      PORT: ${{ secrets.PORT || '3000' }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://postgres:postgrespassword@localhost:5432/quiz_management_test?schema=public' }}
+      JWT_ACCESS_TOKEN_SECRET: ${{ secrets.JWT_ACCESS_TOKEN_SECRET || 'ci-test-jwt-access-token-secret-32-chars-long' }}
+      JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET || 'ci-test-jwt-refresh-token-secret-32-chars-long' }}
+      JWT_ACCESS_TOKEN_EXPIRATION_MS: ${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION_MS || '30000' }}
+      JWT_REFRESH_TOKEN_EXPIRATION_MS: ${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION_MS || '604800000' }}
 
     services:
       postgres:
