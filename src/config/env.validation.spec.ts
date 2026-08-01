@@ -15,6 +15,8 @@ describe('env.validation', () => {
     const result = validate(validConfig);
     expect(result.PORT).toBe(3000);
     expect(result.NODE_ENV).toBe('development');
+    expect(result.REDIS_HOST).toBe('localhost');
+    expect(result.REDIS_PORT).toBe(6379);
   });
 
   it('should throw Error on invalid environment configuration', () => {

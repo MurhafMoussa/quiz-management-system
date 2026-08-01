@@ -10,6 +10,9 @@ export const envSchema = z.object({
   JWT_REFRESH_TOKEN_SECRET: z.string().min(8),
   JWT_ACCESS_TOKEN_EXPIRATION_MS: z.string(),
   JWT_REFRESH_TOKEN_EXPIRATION_MS: z.string(),
+  REDIS_HOST: z.string().default('localhost'),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_PASSWORD: z.string().optional(),
 });
 
 // Extract the inferred TypeScript type from the schema
