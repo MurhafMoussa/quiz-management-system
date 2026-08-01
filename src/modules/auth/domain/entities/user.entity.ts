@@ -1,4 +1,7 @@
-export class User {
+import { AggregateRoot } from 'src/shared/domain/entities/aggrigate-root';
+import { UserRegisteredEvent } from '../events/user-registered.event';
+
+export class User extends AggregateRoot {
   private constructor(
     public readonly id: string,
     private _username: string,
@@ -7,7 +10,9 @@ export class User {
     private _refreshTokenHash: string | undefined,
     public readonly createdAt: Date,
     private _updatedAt: Date,
-  ) {}
+  ) {
+    super();
+  }
   static create(params: {
     id: string;
     username: string;
@@ -16,7 +21,7 @@ export class User {
     refreshTokenHash: string | undefined;
   }): User {
     const now = new Date();
-    return new User(
+    const user = new User(
       params.id,
       params.username,
       params.email,
@@ -25,6 +30,11 @@ export class User {
       now,
       now,
     );
+    user.recordDomainEvent(
+      new UserRegisteredEvent(params.id, params.username, params.email),
+    );
+
+    return user;
   }
   public static rehydrate(params: {
     id: string;
