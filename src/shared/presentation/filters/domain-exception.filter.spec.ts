@@ -29,7 +29,7 @@ describe('DomainExceptionFilter', () => {
 
   class TestDomainException extends DomainException {
     constructor() {
-      super('auth.USER_ALREADY_EXISTS' as any, { user: 'John' });
+      super('auth.USER_ALREADY_EXISTS', { user: 'John' });
     }
   }
 
