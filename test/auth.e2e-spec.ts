@@ -27,15 +27,6 @@ describe('Auth Endpoints (e2e)', () => {
       inMemoryUsers.set(user.id, user);
       return user;
     },
-    async updateRefreshTokenHash(
-      refreshTokenHash: string,
-      userId: string,
-    ): Promise<void> {
-      const existing = inMemoryUsers.get(userId);
-      if (existing) {
-        existing.changeRefreshToken(refreshTokenHash);
-      }
-    },
   };
 
   const mockPrismaService = {
