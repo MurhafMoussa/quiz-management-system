@@ -13,6 +13,7 @@ import { JwtTokenService } from './infrastructure/services/jwt.service';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { RefreshTokenHandler } from './application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from './application/handlers/get-current-user.handler';
+import { UserRegisteredListener } from './application/listeners/user-registered.listener';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { GetCurrentUserHandler } from './application/handlers/get-current-user.h
     LoginHandler,
     RefreshTokenHandler,
     GetCurrentUserHandler,
+    UserRegisteredListener,
     {
       provide: HASHER_TOKEN,
       useClass: ArgonPasswordHasher,
