@@ -10,6 +10,7 @@ import {
   TokenService,
 } from '../../domain/interfaces/token.service';
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
+import { UserNotVerifiedException } from '../../domain/exceptions/user-not-verified.exception';
 import { User } from '../../domain/entities/user.entity';
 
 describe('LoginHandler', () => {
@@ -56,6 +57,7 @@ describe('LoginHandler', () => {
       email: 'john@example.com',
       passwordHash: 'hashedPass',
       refreshTokenHash: undefined,
+      isVerified: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -104,6 +106,7 @@ describe('LoginHandler', () => {
       email: 'john@example.com',
       passwordHash: 'hashedPass',
       refreshTokenHash: undefined,
+      isVerified: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -114,5 +117,25 @@ describe('LoginHandler', () => {
     await expect(
       handler.handle({ email: 'john@example.com', password: 'wrongPassword' }),
     ).rejects.toThrow(InvalidCredentialsException);
+  });
+
+  it('should throw UserNotVerifiedException when user is not verified', async () => {
+    const mockUnverifiedUser = User.rehydrate({
+      id: 'user-id-1',
+      username: 'john',
+      email: 'john@example.com',
+      passwordHash: 'hashedPass',
+      refreshTokenHash: undefined,
+      isVerified: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    userRepository.findByEmail.mockResolvedValue(mockUnverifiedUser);
+    hasher.compare.mockResolvedValue(true);
+
+    await expect(
+      handler.handle({ email: 'john@example.com', password: 'password123' }),
+    ).rejects.toThrow(UserNotVerifiedException);
   });
 });
