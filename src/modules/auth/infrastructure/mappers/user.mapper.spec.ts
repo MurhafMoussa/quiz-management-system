@@ -11,6 +11,7 @@ describe('UserMapper', () => {
     email: 'test@example.com',
     password_hash: 'hashedPassword',
     refresh_token_hash: 'hashedRefreshToken',
+    is_verified: false,
     created_at: date,
     updated_at: date,
   };
@@ -57,6 +58,7 @@ describe('UserMapper', () => {
       email: 'test@example.com',
       password_hash: 'hashedPassword',
       refresh_token_hash: 'hashedRefreshToken',
+      is_verified: false,
       created_at: date,
       updated_at: date,
     });

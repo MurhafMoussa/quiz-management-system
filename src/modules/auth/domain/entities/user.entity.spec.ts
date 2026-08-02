@@ -18,6 +18,7 @@ describe('User Domain Entity', () => {
     expect(user.email).toBe(params.email);
     expect(user.passwordHash).toBe(params.passwordHash);
     expect(user.refreshTokenHash).toBeUndefined();
+    expect(user.isVerified).toBe(false);
     expect(user.createdAt).toBeInstanceOf(Date);
     expect(user.updatedAt).toBeInstanceOf(Date);
 
@@ -76,5 +77,8 @@ describe('User Domain Entity', () => {
 
     user.clearRefreshToken();
     expect(user.refreshTokenHash).toBeUndefined();
+
+    user.markAsVerified();
+    expect(user.isVerified).toBe(true);
   });
 });

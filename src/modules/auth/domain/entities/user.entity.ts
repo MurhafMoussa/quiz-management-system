@@ -8,6 +8,7 @@ export class User extends AggregateRoot {
     private _email: string,
     private _passwordHash: string,
     private _refreshTokenHash: string | undefined,
+    private _isVerified: boolean,
     public readonly createdAt: Date,
     private _updatedAt: Date,
   ) {
@@ -19,6 +20,7 @@ export class User extends AggregateRoot {
     email: string;
     passwordHash: string;
     refreshTokenHash: string | undefined;
+    isVerified?: boolean;
   }): User {
     const now = new Date();
     const user = new User(
@@ -27,6 +29,7 @@ export class User extends AggregateRoot {
       params.email,
       params.passwordHash,
       params.refreshTokenHash,
+      params.isVerified ?? false,
       now,
       now,
     );
@@ -42,6 +45,7 @@ export class User extends AggregateRoot {
     email: string;
     passwordHash: string;
     refreshTokenHash: string | undefined;
+    isVerified?: boolean;
 
     createdAt: Date;
     updatedAt: Date;
@@ -52,6 +56,7 @@ export class User extends AggregateRoot {
       params.email,
       params.passwordHash,
       params.refreshTokenHash,
+      params.isVerified ?? false,
       params.createdAt,
       params.updatedAt,
     );
@@ -73,6 +78,9 @@ export class User extends AggregateRoot {
   get refreshTokenHash() {
     return this._refreshTokenHash;
   }
+  get isVerified() {
+    return this._isVerified;
+  }
   changeUsername(username: string) {
     this._username = username;
     this.touch();
@@ -88,6 +96,10 @@ export class User extends AggregateRoot {
   }
   clearRefreshToken() {
     this._refreshTokenHash = undefined;
+    this.touch();
+  }
+  markAsVerified() {
+    this._isVerified = true;
     this.touch();
   }
 
