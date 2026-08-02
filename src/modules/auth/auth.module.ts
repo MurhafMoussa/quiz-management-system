@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { SharedModule } from 'src/shared/shared.module';
+import { NotificationsModule } from 'src/modules/notifications/notifications.module';
 import { LoginHandler } from './application/handlers/login.handler';
 import { RegisterHandler } from './application/handlers/register.handler';
 import { HASHER_TOKEN } from './domain/interfaces/hasher';
@@ -17,7 +17,7 @@ import { UserRegisteredListener } from './application/listeners/user-registered.
 
 @Module({
   imports: [
-    SharedModule,
+    NotificationsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
