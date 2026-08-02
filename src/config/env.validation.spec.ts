@@ -10,6 +10,9 @@ describe('env.validation', () => {
       JWT_REFRESH_TOKEN_SECRET: 'refreshSecret123',
       JWT_ACCESS_TOKEN_EXPIRATION_MS: '3600000',
       JWT_REFRESH_TOKEN_EXPIRATION_MS: '86400000',
+      SMTP_HOST: 'smtp.gmail.com',
+      SMTP_PORT: '587',
+      FROM: 'noreply@yourapp.com',
     };
 
     const result = validate(validConfig);
@@ -17,6 +20,9 @@ describe('env.validation', () => {
     expect(result.NODE_ENV).toBe('development');
     expect(result.REDIS_HOST).toBe('localhost');
     expect(result.REDIS_PORT).toBe(6379);
+    expect(result.SMTP_HOST).toBe('smtp.gmail.com');
+    expect(result.SMTP_PORT).toBe(587);
+    expect(result.FROM).toBe('noreply@yourapp.com');
   });
 
   it('should throw Error on invalid environment configuration', () => {
