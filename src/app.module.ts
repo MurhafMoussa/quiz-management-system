@@ -21,6 +21,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import KeyvRedis from '@keyv/redis';
 import { Keyv } from 'keyv';
 import { TimeUtils } from './shared/utils/time.utils';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 @Module({
   imports: [
     CacheModule.registerAsync({
@@ -64,6 +65,7 @@ import { TimeUtils } from './shared/utils/time.utils';
     }),
     SharedModule,
     AuthModule,
+    NotificationsModule,
   ],
   providers: [
     {
