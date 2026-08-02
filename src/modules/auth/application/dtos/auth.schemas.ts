@@ -20,3 +20,10 @@ export const BaseUserSchema = z.object({
   username: usernameSchema,
   email: emailSchema,
 });
+
+export const verifyEmailSchema = z.object({
+  userId: z.uuid({ error: 'validation.INVALID_UUID' }),
+  code: z
+    .string({ error: 'validation.FIELD_REQUIRED' })
+    .length(6, { error: 'validation.INVALID_CODE_LENGTH' }),
+});

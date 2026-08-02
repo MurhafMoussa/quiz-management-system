@@ -62,5 +62,3 @@ export class RedisOtpRepository implements OtpRepository {
     return Boolean(exists);
   }
 }
-
-export { RedisOtpRepository as KeyvOtpRepository };
