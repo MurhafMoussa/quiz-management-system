@@ -5,9 +5,11 @@ import { NotificationsModule } from 'src/modules/notifications/notifications.mod
 import { LoginHandler } from './application/handlers/login.handler';
 import { RegisterHandler } from './application/handlers/register.handler';
 import { HASHER_TOKEN } from './domain/interfaces/hasher';
+import { OTP_REPOSITORY_TOKEN } from './domain/interfaces/otp-repository';
 import { TOKEN_SERVICE_TOKEN } from './domain/interfaces/token.service';
 import { USER_REPOSITORY_TOKEN } from './domain/interfaces/user-repository';
 import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.repository';
+import { RedisOtpRepository } from './infrastructure/repositories/redis-otp-repository';
 import { ArgonPasswordHasher } from './infrastructure/services/argon-string-hasher';
 import { JwtTokenService } from './infrastructure/services/jwt.service';
 import { AuthController } from './presentation/controllers/auth.controller';
@@ -47,6 +49,10 @@ import { UserRegisteredListener } from './application/listeners/user-registered.
     {
       provide: TOKEN_SERVICE_TOKEN,
       useClass: JwtTokenService,
+    },
+    {
+      provide: OTP_REPOSITORY_TOKEN,
+      useClass: RedisOtpRepository,
     },
   ],
 })
