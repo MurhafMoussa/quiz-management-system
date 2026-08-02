@@ -12,6 +12,7 @@
 - **UUID v7 Primary Keys**: Time-sortable 128-bit identifiers optimizing PostgreSQL B-Tree index locality while avoiding auto-increment enumeration risks.
 - **Unified API Response Envelopes**: Interceptor-driven HTTP responses wrapping data in clean `{ success: true, data: ..., message: ... }` contracts.
 - **i18n & Domain Exception Mapping**: Centralized exception filters transforming domain errors into localized, client-friendly error payloads via `nestjs-i18n` and `Zod`.
+- **Multi-Channel Notification Architecture**: Pluggable composite notification system (`NotificationCompositeService`) routing notifications across channels (e.g., Email via `@nestjs-modules/mailer` and SMTP) with event-driven triggers (`UserRegisteredListener`).
 - **Multi-Stage Dockerization**: Production-ready multi-stage Docker build utilizing `node:22-alpine` for minimal container footprint and zero dev-dependency leakage.
 - **Comprehensive Test Suite**: Unit, Integration, and End-to-End (E2E) testing with Jest and Supertest.
 
@@ -174,11 +175,15 @@ Auto-increment integers leak row volume and enable sequential scraping attacks. 
 src/
 ├── config/                  # Environment validation & Zod schemas
 ├── modules/
-│   └── auth/
-│       ├── application/     # Use Cases, Handlers, DTOs & Validation Schemas
-│       ├── domain/          # Entities, Domain Interfaces, Exceptions
-│       ├── infrastructure/  # Repositories, Mappers, JWT & Hashing Services
-│       └── presentation/    # Controllers, Guards, Custom Decorators
+│   ├── auth/
+│   │   ├── application/     # Use Cases, Handlers, Event Listeners, DTOs
+│   │   ├── domain/          # Entities, Domain Interfaces, Domain Events, Exceptions
+│   │   ├── infrastructure/  # Repositories, Mappers, JWT & Hashing Services
+│   │   └── presentation/    # Controllers, Guards, Custom Decorators
+│   └── notifications/
+│       ├── domain/          # Notification Channel Constants, Interfaces
+│       ├── infrastructure/  # Composite Service & Channel Providers (Email)
+│       └── notifications.module.ts
 └── shared/
     ├── domain/              # Common Domain Interfaces & Base Exceptions
     ├── infrastructure/      # Prisma DB Service, UUID v7 Generator
@@ -212,6 +217,11 @@ JWT_ACCESS_TOKEN_SECRET=your-super-secret-jwt-access-token-key
 JWT_REFRESH_TOKEN_SECRET=your-super-secret-jwt-refresh-token-key
 JWT_ACCESS_TOKEN_EXPIRATION_MS=30000
 JWT_REFRESH_TOKEN_EXPIRATION_MS=604800000
+
+# SMTP Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+FROM=noreply@yourapp.com
 ```
 
 ### Installation & Local Setup
@@ -290,6 +300,9 @@ Automated quality control is managed via **GitHub Actions** (`.github/workflows/
 | `JWT_REFRESH_TOKEN_SECRET` | `your-super-secret-jwt-refresh-token-key-min-32-chars` |
 | `JWT_ACCESS_TOKEN_EXPIRATION_MS` | `30000` |
 | `JWT_REFRESH_TOKEN_EXPIRATION_MS` | `604800000` |
+| `SMTP_HOST` | `smtp.gmail.com` |
+| `SMTP_PORT` | `587` |
+| `FROM` | `noreply@yourapp.com` |
 | `PORT` | `3000` |
 
 **Pipeline Steps**:
