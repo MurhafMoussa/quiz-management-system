@@ -106,6 +106,7 @@ describe('RegisterHandler', () => {
         id: 'generated-uuid',
         username: registerDto.username,
         email: registerDto.email,
+        isVerified: false,
       },
     });
   });

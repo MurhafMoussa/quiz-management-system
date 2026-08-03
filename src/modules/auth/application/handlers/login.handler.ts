@@ -52,6 +52,7 @@ export class LoginHandler {
         id: existingUser.id,
         username: existingUser.username,
         email: existingUser.email,
+        isVerified: existingUser.isVerified,
       },
     };
   }

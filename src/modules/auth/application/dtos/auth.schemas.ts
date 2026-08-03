@@ -19,6 +19,7 @@ export const BaseUserSchema = z.object({
   id: z.uuid(),
   username: usernameSchema,
   email: emailSchema,
+  isVerified: z.boolean(),
 });
 
 export const verifyEmailSchema = z.object({

@@ -87,6 +87,7 @@ describe('LoginHandler', () => {
         id: mockUser.id,
         username: mockUser.username,
         email: mockUser.email,
+        isVerified: mockUser.isVerified,
       },
     });
   });

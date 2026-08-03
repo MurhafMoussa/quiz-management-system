@@ -89,6 +89,7 @@ describe('RefreshTokenHandler', () => {
         id: mockUser.id,
         username: mockUser.username,
         email: mockUser.email,
+        isVerified: mockUser.isVerified,
       },
     });
   });

@@ -48,6 +48,7 @@ describe('GetCurrentUserHandler', () => {
       id: 'user-123',
       username: 'johndoe',
       email: 'john@example.com',
+      isVerified: false,
     });
   });
 
