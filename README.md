@@ -6,13 +6,14 @@
 
 ## 🌟 Key Engineering Features
 
-- **Rich Domain Model (DDD)**: Fully encapsulated domain entities (`User`) with private state, explicit business rules (`changeRefreshToken`, `touch`), and domain-driven persistence contracts.
-- **Inverted Repository Pattern**: Abstract `UserRepository` interfaces decoupling application logic from ORM and database implementations (`PrismaUserRepository`).
+- **Rich Domain Model (DDD)**: Fully encapsulated domain entities (`User`) with private state, explicit business rules (`changeRefreshToken`, `markAsVerified`, `touch`), and domain-driven persistence contracts.
+- **Inverted Repository Pattern**: Abstract `UserRepository` and `OtpRepository` interfaces decoupling application logic from ORM and cache implementations (`PrismaUserRepository`, `RedisOtpRepository`).
 - **Zero-Trust Refresh Token Security**: DB stores Argon2id-hashed refresh tokens rather than raw tokens, mitigating session hijacking in the event of a database breach.
+- **Email Verification & Redis OTP System**: 6-digit verification codes generated upon registration, stored in Redis with expiration TTL & rate limiting, and sent via asynchronous event listeners.
 - **UUID v7 Primary Keys**: Time-sortable 128-bit identifiers optimizing PostgreSQL B-Tree index locality while avoiding auto-increment enumeration risks.
 - **Unified API Response Envelopes**: Interceptor-driven HTTP responses wrapping data in clean `{ success: true, data: ..., message: ... }` contracts.
 - **i18n & Domain Exception Mapping**: Centralized exception filters transforming domain errors into localized, client-friendly error payloads via `nestjs-i18n` and `Zod`.
-- **Multi-Channel Notification Architecture**: Pluggable composite notification system (`NotificationCompositeService`) routing notifications across channels (e.g., Email via `@nestjs-modules/mailer` and SMTP) with event-driven triggers (`UserRegisteredListener`).
+- **Multi-Channel Notification & Local Mailpit SMTP**: Pluggable composite notification system (`NotificationCompositeService`) routing emails with Docker-backed Mailpit local SMTP catcher & web interface (`http://localhost:8025`).
 - **Multi-Stage Dockerization**: Production-ready multi-stage Docker build utilizing `node:22-alpine` for minimal container footprint and zero dev-dependency leakage.
 - **Comprehensive Test Suite**: Unit, Integration, and End-to-End (E2E) testing with Jest and Supertest.
 
@@ -65,11 +66,13 @@ graph TD
         LH[LoginHandler]
         RTH[RefreshTokenHandler]
         GCU[GetCurrentUserHandler]
+        VEH[VerifyEmailHandler]
     end
 
     subgraph Domain Layer [Domain Layer - Core Business Rules]
         UE[User Domain Entity]
         URI[(IUserRepository Interface)]
+        ORI[(IOtpRepository Interface)]
         HSI[(IHasher Interface)]
         TSI[(ITokenService Interface)]
         IDG[(IIdGenerator Interface)]
@@ -77,6 +80,7 @@ graph TD
 
     subgraph Infrastructure Layer [Infrastructure Layer - Concrete Adapters]
         PUR[PrismaUserRepository]
+        ROR[RedisOtpRepository]
         UM[UserMapper]
         ASH[ArgonStringHasher]
         JWT[JwtService]
@@ -192,6 +196,18 @@ src/
 
 ---
 
+## 🔌 API Endpoints Summary
+
+| Method | Endpoint | Auth Required | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/auth/register` | No | Registers a new user, sends email verification OTP |
+| `POST` | `/auth/verify-email` | No | Verifies email address using 6-digit OTP code |
+| `POST` | `/auth/login` | No | Authenticates verified user, returns access & refresh tokens |
+| `POST` | `/auth/refresh` | No | Rotates refresh token and returns new access token |
+| `POST` | `/auth/me` | Yes (Bearer) | Retrieves current authenticated user profile |
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -212,15 +228,20 @@ POSTGRES_PASSWORD=postgrespassword
 POSTGRES_DB=quiz_db
 DATABASE_URL=postgresql://postgres:postgrespassword@localhost:5432/quiz_db?schema=public
 
+# Redis Configuration
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+
 # Authentication Secrets & Expirations
 JWT_ACCESS_TOKEN_SECRET=your-super-secret-jwt-access-token-key
 JWT_REFRESH_TOKEN_SECRET=your-super-secret-jwt-refresh-token-key
 JWT_ACCESS_TOKEN_EXPIRATION_MS=30000
 JWT_REFRESH_TOKEN_EXPIRATION_MS=604800000
 
-# SMTP Configuration
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
+# SMTP Configuration (Mailpit for Local Dev)
+SMTP_HOST=localhost
+SMTP_PORT=1025
 FROM=noreply@yourapp.com
 ```
 
@@ -230,7 +251,7 @@ FROM=noreply@yourapp.com
 # 1. Install dependencies
 npm install
 
-# 2. Start PostgreSQL container via Docker Compose
+# 2. Start PostgreSQL, Redis, and Mailpit containers via Docker Compose
 docker compose up -d
 
 # 3. Generate Prisma Client
@@ -239,12 +260,13 @@ npx prisma generate
 # 4. Run database migrations
 npx prisma migrate dev
 
-# 5. Start the development server
+# 5. Start the development server (or npm run dev:full)
 npm run start:dev
 ```
 
 The server will start at `http://localhost:3000`.  
-Access interactive Swagger API documentation at **`http://localhost:3000/docs`**.
+- Access interactive Swagger API documentation at **`http://localhost:3000/docs`**.
+- View captured emails and OTP codes in Mailpit UI at **`http://localhost:8025`**.
 
 ---
 
