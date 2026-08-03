@@ -142,17 +142,17 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    Req[HTTP Request] --> Guard[AuthGuard / JWT Strategy]
-    Guard --> ZodFilter[Zod Validation Filter]
-    ZodFilter --> Controller[AuthController]
-    Controller --> Handler[Application Use Case Handler]
-    Handler --> Domain[Rich Domain Entity & Invariants]
+    Req["HTTP Request"] --> Guard["AuthGuard / JWT Strategy"]
+    Guard --> ZodFilter["Zod Validation Filter"]
+    ZodFilter --> Controller["AuthController"]
+    Controller --> Handler["Application Use Case Handler"]
+    Handler --> Domain["Rich Domain Entity & Invariants"]
     
-    Domain -- Throws Exception --> DomainFilter[DomainException Filter]
-    DomainFilter --> JsonErr[Unified Error Envelope { success: false, error: ... }]
+    Domain -- Throws Exception --> DomainFilter["DomainException Filter"]
+    DomainFilter --> JsonErr["Unified Error Envelope { success: false, error: ... }"]
     
-    Handler -- Success --> Interceptor[ResponseTransformer Interceptor]
-    Interceptor --> JsonOk[Unified Success Envelope { success: true, data: ... }]
+    Handler -- Success --> Interceptor["ResponseTransformer Interceptor"]
+    Interceptor --> JsonOk["Unified Success Envelope { success: true, data: ... }"]
 ```
 
 ---
