@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception';
+import { UserNotVerifiedException } from '../../domain/exceptions/user-not-verified.exception';
 import { HASHER_TOKEN, type Hasher } from '../../domain/interfaces/hasher';
 import {
   TOKEN_SERVICE_TOKEN,
@@ -33,6 +34,9 @@ export class LoginHandler {
     if (!passwordIsCorrect) {
       throw new InvalidCredentialsException();
     }
+    if (!existingUser.isVerified) {
+      throw new UserNotVerifiedException();
+    }
     const { refreshToken, accessToken } =
       await this.tokenService.generateTokens({
         email: existingUser.email,
@@ -48,6 +52,7 @@ export class LoginHandler {
         id: existingUser.id,
         username: existingUser.username,
         email: existingUser.email,
+        isVerified: existingUser.isVerified,
       },
     };
   }

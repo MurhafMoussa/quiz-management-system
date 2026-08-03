@@ -12,10 +12,12 @@ import { ResponseMessage } from 'src/shared/presentation/decorators/response-mes
 import { LoginUserDto } from '../../application/dtos/login-user.dto';
 import { RefreshTokenDto } from '../../application/dtos/refresh-token.dto';
 import { RegisterUserDto } from '../../application/dtos/register-user.dto';
+import { VerifyEmailDto } from '../../application/dtos/verify-email.dto';
 import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
 import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
 import { RegisterHandler } from '../../application/handlers/register.handler';
+import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
 import type { TokenPayload } from '../../domain/interfaces/token-payload';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { AuthGuard } from '../guards/auth.guard';
@@ -27,6 +29,7 @@ export class AuthController {
     private readonly loginHandler: LoginHandler,
     private readonly refreshTokenHandler: RefreshTokenHandler,
     private readonly getCurrentUserHandler: GetCurrentUserHandler,
+    private readonly verifyEmailHandler: VerifyEmailHandler,
   ) {}
   @Post('register')
   @ResponseMessage('auth.USER_REGISTERED_SUCCESSFULLY')
@@ -52,5 +55,12 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async getCurrentUser(@CurrentUser() payload: TokenPayload) {
     return this.getCurrentUserHandler.handle(payload.userId);
+  }
+
+  @Post('verify-email')
+  @HttpCode(HttpStatus.OK)
+  @ResponseMessage('auth.EMAIL_VERIFIED_SUCCESSFULLY')
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.verifyEmailHandler.execute(dto.userId, dto.code);
   }
 }

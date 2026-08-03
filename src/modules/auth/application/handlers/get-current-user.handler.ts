@@ -23,6 +23,7 @@ export class GetCurrentUserHandler {
       email: existingUser.email,
       id: existingUser.id,
       username: existingUser.username,
+      isVerified: existingUser.isVerified,
     };
   }
 }

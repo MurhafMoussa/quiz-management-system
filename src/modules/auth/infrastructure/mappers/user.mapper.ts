@@ -9,6 +9,7 @@ export class UserMapper {
       email: raw.email,
       passwordHash: raw.password_hash,
       refreshTokenHash: raw.refresh_token_hash ?? undefined,
+      isVerified: raw.is_verified,
       createdAt: raw.created_at,
       updatedAt: raw.updated_at,
     });
@@ -21,6 +22,7 @@ export class UserMapper {
       email: user.email,
       password_hash: user.passwordHash,
       refresh_token_hash: user.refreshTokenHash,
+      is_verified: user.isVerified,
       created_at: user.createdAt,
       updated_at: user.updatedAt,
     };

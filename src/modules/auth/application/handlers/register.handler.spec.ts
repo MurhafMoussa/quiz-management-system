@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { RegisterHandler } from './register.handler';
 import {
   USER_REPOSITORY_TOKEN,
@@ -15,6 +16,8 @@ import {
 } from 'src/shared/domain/interfaces/id-generator';
 import { UserAlreadyExistException } from '../../domain/exceptions/user-already-exist.exception';
 import { User } from '../../domain/entities/user.entity';
+import { UserRegisteredEvent } from '../../domain/events/user-registered.event';
+import { DomainEventsNames } from 'src/shared/domain/constants/domain-events-names.enum';
 
 describe('RegisterHandler', () => {
   let handler: RegisterHandler;
@@ -22,8 +25,12 @@ describe('RegisterHandler', () => {
   let hasher: jest.Mocked<Hasher>;
   let tokenService: jest.Mocked<TokenService>;
   let idGenerator: jest.Mocked<IdGenerator>;
+  let eventEmitter: { emit: jest.Mock };
 
   beforeEach(async () => {
+    eventEmitter = {
+      emit: jest.fn(),
+    };
     userRepository = {
       findByEmail: jest.fn(),
       findById: jest.fn(),
@@ -52,6 +59,7 @@ describe('RegisterHandler', () => {
         { provide: HASHER_TOKEN, useValue: hasher },
         { provide: TOKEN_SERVICE_TOKEN, useValue: tokenService },
         { provide: ID_GENERATOR_TOKEN, useValue: idGenerator },
+        { provide: EventEmitter2, useValue: eventEmitter },
       ],
     }).compile();
 
@@ -87,6 +95,10 @@ describe('RegisterHandler', () => {
     });
     expect(hasher.hash).toHaveBeenNthCalledWith(2, 'refresh-token');
     expect(userRepository.save).toHaveBeenCalledWith(expect.any(User));
+    expect(eventEmitter.emit).toHaveBeenCalledWith(
+      DomainEventsNames.USER_REGISTERED,
+      expect.any(UserRegisteredEvent),
+    );
     expect(result).toEqual({
       accessToken: 'access-token',
       refreshToken: 'refresh-token',
@@ -94,6 +106,7 @@ describe('RegisterHandler', () => {
         id: 'generated-uuid',
         username: registerDto.username,
         email: registerDto.email,
+        isVerified: false,
       },
     });
   });

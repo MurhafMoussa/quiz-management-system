@@ -48,6 +48,7 @@ export class RefreshTokenHandler {
         id: user.id,
         username: user.username,
         email: user.email,
+        isVerified: user.isVerified,
       },
     };
   }

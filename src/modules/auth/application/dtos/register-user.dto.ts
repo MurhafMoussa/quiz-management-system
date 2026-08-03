@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { BaseUserSchema, passwordSchema } from './auth.schemas';
-const RegisterUserSchema = BaseUserSchema.omit({ id: true })
+const RegisterUserSchema = BaseUserSchema.omit({ id: true, isVerified: true })
   .extend({
     password: passwordSchema,
     confirmPassword: passwordSchema,

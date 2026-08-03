@@ -4,6 +4,7 @@ import { RegisterHandler } from '../../application/handlers/register.handler';
 import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
+import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
 import { TOKEN_SERVICE_TOKEN } from '../../domain/interfaces/token.service';
 
 describe('AuthController', () => {
@@ -12,12 +13,14 @@ describe('AuthController', () => {
   let loginHandler: jest.Mocked<LoginHandler>;
   let refreshTokenHandler: jest.Mocked<RefreshTokenHandler>;
   let getCurrentUserHandler: jest.Mocked<GetCurrentUserHandler>;
+  let verifyEmailHandler: jest.Mocked<VerifyEmailHandler>;
 
   beforeEach(async () => {
     registerHandler = { handle: jest.fn() } as any;
     loginHandler = { handle: jest.fn() } as any;
     refreshTokenHandler = { handle: jest.fn() } as any;
     getCurrentUserHandler = { handle: jest.fn() } as any;
+    verifyEmailHandler = { execute: jest.fn() } as any;
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -26,6 +29,7 @@ describe('AuthController', () => {
         { provide: LoginHandler, useValue: loginHandler },
         { provide: RefreshTokenHandler, useValue: refreshTokenHandler },
         { provide: GetCurrentUserHandler, useValue: getCurrentUserHandler },
+        { provide: VerifyEmailHandler, useValue: verifyEmailHandler },
         {
           provide: TOKEN_SERVICE_TOKEN,
           useValue: {
@@ -50,7 +54,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'acc',
       refreshToken: 'ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     registerHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -65,7 +74,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'acc',
       refreshToken: 'ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     loginHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -80,7 +94,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'new-acc',
       refreshToken: 'old-ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     refreshTokenHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -96,6 +115,7 @@ describe('AuthController', () => {
       id: 'u-1',
       username: 'john',
       email: 'john@example.com',
+      isVerified: false,
     };
     getCurrentUserHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -103,5 +123,20 @@ describe('AuthController', () => {
 
     expect(getCurrentUserHandler.handle).toHaveBeenCalledWith('u-1');
     expect(result).toEqual(expectedResponse);
+  });
+
+  it('should call verifyEmailHandler on verifyEmail()', async () => {
+    const dto = {
+      userId: '123e4567-e89b-12d3-a456-426614174000',
+      code: '123456',
+    };
+    verifyEmailHandler.execute.mockResolvedValue(undefined);
+
+    await controller.verifyEmail(dto);
+
+    expect(verifyEmailHandler.execute).toHaveBeenCalledWith(
+      '123e4567-e89b-12d3-a456-426614174000',
+      '123456',
+    );
   });
 });

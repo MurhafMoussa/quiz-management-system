@@ -1,4 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DomainEventsNames } from 'src/shared/domain/constants/domain-events-names.enum';
 import {
   ID_GENERATOR_TOKEN,
   type IdGenerator,
@@ -25,6 +27,7 @@ export class RegisterHandler {
     private readonly userRepository: UserRepository,
     @Inject(HASHER_TOKEN) private readonly hasher: Hasher,
     @Inject(TOKEN_SERVICE_TOKEN) private readonly tokenService: TokenService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async handle(dto: RegisterUserDto): Promise<AuthResponseDto> {
@@ -45,6 +48,10 @@ export class RegisterHandler {
       refreshTokenHash: hashedRefreshToken,
     });
     await this.userRepository.save(user);
+    const events = user.pullDomainEvents();
+    events.forEach((event) =>
+      this.eventEmitter.emit(DomainEventsNames.USER_REGISTERED, event),
+    );
     return {
       refreshToken,
       accessToken,
@@ -52,6 +59,7 @@ export class RegisterHandler {
         id: user.id,
         username: user.username,
         email: user.email,
+        isVerified: user.isVerified,
       },
     };
   }
