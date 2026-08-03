@@ -3,6 +3,7 @@ import { BaseUserSchema, passwordSchema } from './auth.schemas';
 const LoginUserSchema = BaseUserSchema.omit({
   id: true,
   username: true,
+  isVerified: true,
 }).extend({
   password: passwordSchema,
 });

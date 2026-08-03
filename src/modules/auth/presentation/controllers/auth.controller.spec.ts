@@ -54,7 +54,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'acc',
       refreshToken: 'ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     registerHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -69,7 +74,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'acc',
       refreshToken: 'ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     loginHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -84,7 +94,12 @@ describe('AuthController', () => {
     const expectedResponse = {
       accessToken: 'new-acc',
       refreshToken: 'old-ref',
-      user: { id: 'u-1', username: 'john', email: 'john@example.com' },
+      user: {
+        id: 'u-1',
+        username: 'john',
+        email: 'john@example.com',
+        isVerified: false,
+      },
     };
     refreshTokenHandler.handle.mockResolvedValue(expectedResponse);
 
@@ -100,6 +115,7 @@ describe('AuthController', () => {
       id: 'u-1',
       username: 'john',
       email: 'john@example.com',
+      isVerified: false,
     };
     getCurrentUserHandler.handle.mockResolvedValue(expectedResponse);
 
