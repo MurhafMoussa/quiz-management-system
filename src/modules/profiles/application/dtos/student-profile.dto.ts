@@ -6,7 +6,7 @@ export const CreateStudentProfileSchema = z.object({
     .string({ error: 'validation.FIELD_REQUIRED' })
     .min(1, { error: 'validation.FIELD_REQUIRED' }),
   gradeLevel: z.string().optional(),
-  interests: z.array(z.string()).optional().default([]),
+  interests: z.array(z.string()).optional(),
   major: z.string().optional(),
 });
 
