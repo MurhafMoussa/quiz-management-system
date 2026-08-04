@@ -53,7 +53,7 @@ describe('CreateStudentProfileHandler', () => {
     userRepoMock.findById.mockResolvedValue(mockUser);
     profileRepoMock.findStudentProfileByUserId.mockResolvedValue(null);
 
-    const dto = { studentIdCode: 'STU123', gradeLevel: '10' };
+    const dto = { studentIdCode: 'STU123', gradeLevel: '10', interests: [] };
     const result = await handler.handle('u-1', Role.STUDENT, 'u-1', dto);
 
     expect(profileRepoMock.saveStudentProfile).toHaveBeenCalled();
@@ -62,7 +62,7 @@ describe('CreateStudentProfileHandler', () => {
   });
 
   it('should throw ForbiddenException if user tries to create profile for another user and is not admin', async () => {
-    const dto = { studentIdCode: 'STU123' };
+    const dto = { studentIdCode: 'STU123', interests: [] };
 
     await expect(
       handler.handle('u-1', Role.STUDENT, 'u-2', dto),
@@ -81,7 +81,7 @@ describe('CreateStudentProfileHandler', () => {
     userRepoMock.findById.mockResolvedValue(mockUser);
     profileRepoMock.findStudentProfileByUserId.mockResolvedValue(null);
 
-    const dto = { studentIdCode: 'STU123' };
+    const dto = { studentIdCode: 'STU123', interests: [] };
     const result = await handler.handle('admin-1', Role.ADMIN, 'u-2', dto);
 
     expect(result.userId).toBe('u-2');
@@ -91,7 +91,10 @@ describe('CreateStudentProfileHandler', () => {
     userRepoMock.findById.mockResolvedValue(null);
 
     await expect(
-      handler.handle('u-1', Role.STUDENT, 'u-1', { studentIdCode: 'STU123' }),
+      handler.handle('u-1', Role.STUDENT, 'u-1', {
+        studentIdCode: 'STU123',
+        interests: [],
+      }),
     ).rejects.toThrow(NotFoundDomainException);
   });
 
@@ -110,7 +113,10 @@ describe('CreateStudentProfileHandler', () => {
     });
 
     await expect(
-      handler.handle('u-1', Role.STUDENT, 'u-1', { studentIdCode: 'STU123' }),
+      handler.handle('u-1', Role.STUDENT, 'u-1', {
+        studentIdCode: 'STU123',
+        interests: [],
+      }),
     ).rejects.toThrow(ProfileAlreadyExistsException);
   });
 });

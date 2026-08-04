@@ -94,7 +94,7 @@ describe('ProfilesController', () => {
 
   it('should call createStudentProfileHandler on createMyStudentProfile()', async () => {
     const user = { userId: 'u-1', email: 'a@b.com', role: Role.STUDENT };
-    const dto = { studentIdCode: 'STU1' };
+    const dto = { studentIdCode: 'STU1', interests: [] };
     createStudentProfileHandler.handle.mockResolvedValue({ id: 'sp-1' } as any);
 
     const result = await controller.createMyStudentProfile(user, dto);

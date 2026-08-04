@@ -53,7 +53,7 @@ describe('CreateTeacherProfileHandler', () => {
     userRepoMock.findById.mockResolvedValue(mockUser);
     profileRepoMock.findTeacherProfileByUserId.mockResolvedValue(null);
 
-    const dto = { title: 'Dr.', bio: 'Bio' };
+    const dto = { title: 'Dr.', bio: 'Bio', subjectSpecialties: [] };
     const result = await handler.handle('u-2', Role.TEACHER, 'u-2', dto);
 
     expect(profileRepoMock.saveTeacherProfile).toHaveBeenCalled();
@@ -63,7 +63,10 @@ describe('CreateTeacherProfileHandler', () => {
 
   it('should throw ForbiddenException if user tries to create profile for another user and is not admin', async () => {
     await expect(
-      handler.handle('u-1', Role.TEACHER, 'u-2', { title: 'Dr.' }),
+      handler.handle('u-1', Role.TEACHER, 'u-2', {
+        title: 'Dr.',
+        subjectSpecialties: [],
+      }),
     ).rejects.toThrow(ForbiddenException);
   });
 
@@ -82,7 +85,10 @@ describe('CreateTeacherProfileHandler', () => {
     });
 
     await expect(
-      handler.handle('u-2', Role.TEACHER, 'u-2', { title: 'Dr.' }),
+      handler.handle('u-2', Role.TEACHER, 'u-2', {
+        title: 'Dr.',
+        subjectSpecialties: [],
+      }),
     ).rejects.toThrow(ProfileAlreadyExistsException);
   });
 });
