@@ -70,7 +70,8 @@ describe('Auth Endpoints (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
-          username: 'johndoe',
+          firstName: 'John',
+          lastName: 'Doe',
           email: 'john@example.com',
           password: 'Password123!',
           confirmPassword: 'Password123!',
@@ -86,8 +87,10 @@ describe('Auth Endpoints (e2e)', () => {
           refreshToken: expect.any(String),
           user: {
             id: expect.any(String),
-            username: 'johndoe',
+            firstName: 'John',
+            lastName: 'Doe',
             email: 'john@example.com',
+            isVerified: false,
           },
         },
       });
@@ -97,7 +100,8 @@ describe('Auth Endpoints (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
-          username: 'johndoe',
+          firstName: 'John',
+          lastName: 'Doe',
           email: 'john@example.com',
           password: 'Password123!',
           confirmPassword: 'DifferentPassword123!',
@@ -117,7 +121,8 @@ describe('Auth Endpoints (e2e)', () => {
 
     it('should fail with 400 Bad Request if user email already exists', async () => {
       const registerPayload = {
-        username: 'johndoe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         password: 'Password123!',
         confirmPassword: 'Password123!',
@@ -143,11 +148,20 @@ describe('Auth Endpoints (e2e)', () => {
     it('should login successfully with correct credentials and return tokens', async () => {
       // 1. Register user
       await request(app.getHttpServer()).post('/auth/register').send({
-        username: 'johndoe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         password: 'Password123!',
         confirmPassword: 'Password123!',
       });
+
+      // Verify user
+      const userToVerify =
+        await mockUserRepository.findByEmail('john@example.com');
+      if (userToVerify) {
+        userToVerify.markAsVerified();
+        await mockUserRepository.save(userToVerify);
+      }
 
       // 2. Login
       const response = await request(app.getHttpServer())
@@ -165,11 +179,19 @@ describe('Auth Endpoints (e2e)', () => {
 
     it('should fail with 400 Bad Request if password is incorrect', async () => {
       await request(app.getHttpServer()).post('/auth/register').send({
-        username: 'johndoe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         password: 'Password123!',
         confirmPassword: 'Password123!',
       });
+
+      const userToVerify =
+        await mockUserRepository.findByEmail('john@example.com');
+      if (userToVerify) {
+        userToVerify.markAsVerified();
+        await mockUserRepository.save(userToVerify);
+      }
 
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -188,7 +210,8 @@ describe('Auth Endpoints (e2e)', () => {
       const registerRes = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
-          username: 'johndoe',
+          firstName: 'John',
+          lastName: 'Doe',
           email: 'john@example.com',
           password: 'Password123!',
           confirmPassword: 'Password123!',
@@ -204,8 +227,10 @@ describe('Auth Endpoints (e2e)', () => {
       expect(profileRes.body.success).toBe(true);
       expect(profileRes.body.data).toEqual({
         id: expect.any(String),
-        username: 'johndoe',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
+        isVerified: false,
       });
     });
 
@@ -222,7 +247,8 @@ describe('Auth Endpoints (e2e)', () => {
       const loginRes = await request(app.getHttpServer())
         .post('/auth/register')
         .send({
-          username: 'johndoe',
+          firstName: 'John',
+          lastName: 'Doe',
           email: 'john@example.com',
           password: 'Password123!',
           confirmPassword: 'Password123!',

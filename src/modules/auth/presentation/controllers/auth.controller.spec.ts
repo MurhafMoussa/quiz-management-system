@@ -46,7 +46,8 @@ describe('AuthController', () => {
 
   it('should call registerHandler on register()', async () => {
     const dto = {
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       password: 'pass',
       confirmPassword: 'pass',
@@ -56,7 +57,8 @@ describe('AuthController', () => {
       refreshToken: 'ref',
       user: {
         id: 'u-1',
-        username: 'john',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
       },
@@ -76,7 +78,8 @@ describe('AuthController', () => {
       refreshToken: 'ref',
       user: {
         id: 'u-1',
-        username: 'john',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
       },
@@ -96,7 +99,8 @@ describe('AuthController', () => {
       refreshToken: 'old-ref',
       user: {
         id: 'u-1',
-        username: 'john',
+        firstName: 'John',
+        lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
       },
@@ -113,7 +117,8 @@ describe('AuthController', () => {
     const payload = { userId: 'u-1', email: 'john@example.com' };
     const expectedResponse = {
       id: 'u-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       isVerified: false,
     };
