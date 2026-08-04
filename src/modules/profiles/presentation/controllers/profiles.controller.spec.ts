@@ -69,15 +69,27 @@ describe('ProfilesController', () => {
 
   it('should call getMyProfileHandler on getMyProfile()', async () => {
     const user = { userId: 'u-1', email: 'a@b.com', role: Role.STUDENT };
-    getMyProfileHandler.handle.mockResolvedValue({
-      type: 'STUDENT',
-      profile: {} as any,
-    });
+    const expectedResponse = {
+      id: 'u-1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'a@b.com',
+      isVerified: true,
+      role: Role.STUDENT,
+      profile: {
+        id: 'sp-1',
+        userId: 'u-1',
+        studentIdCode: 'STU1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    };
+    getMyProfileHandler.handle.mockResolvedValue(expectedResponse);
 
     const result = await controller.getMyProfile(user);
 
     expect(getMyProfileHandler.handle).toHaveBeenCalledWith('u-1');
-    expect(result.type).toBe('STUDENT');
+    expect(result.role).toBe(Role.STUDENT);
   });
 
   it('should call createStudentProfileHandler on createMyStudentProfile()', async () => {
