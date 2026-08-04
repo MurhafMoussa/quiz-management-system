@@ -15,11 +15,45 @@ datasource db {
 model User{
   id String @id @default(uuid())
   email String @unique
-  username String 
+  first_name String  
+  last_name String  
   password_hash String
+  avatar_url String?
   refresh_token_hash String? 
   is_verified Boolean @default(false)
+  role Role @default(STUDENT)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  TeacherProfile TeacherProfile?
+  StudentProfile StudentProfile?
   @@map("users")
+}
+enum Role {
+  ADMIN
+  STUDENT
+  TEACHER
+}
+model TeacherProfile {
+  id String @id @default(uuid())
+  user_id String @unique 
+  user User @relation(fields: [user_id], references: [id],onDelete: Cascade)
+  title String?
+  bio String?
+  department String?
+  subject_specialties String[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  @@map("teacher_profiles")
+}
+model StudentProfile {
+  id String @id @default(uuid())
+  user_id String @unique 
+  user User @relation(fields: [user_id], references: [id],onDelete: Cascade)
+  student_id_code String @unique
+  grade_level String?
+  interests String[]
+  major String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  @@map("student_profiles")
 }
