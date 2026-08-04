@@ -1,5 +1,6 @@
-import { z } from 'zod';
 import * as constants from 'src/shared/domain/constants/validation-constants';
+import { z } from 'zod';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 export const usernameSchema = z
   .string({ error: 'validation.FIELD_REQUIRED' })
@@ -17,9 +18,11 @@ export const passwordSchema = z
 
 export const BaseUserSchema = z.object({
   id: z.uuid(),
-  username: usernameSchema,
+  firstName: usernameSchema,
+  lastName: usernameSchema,
   email: emailSchema,
   isVerified: z.boolean(),
+  role: z.nativeEnum(Role),
 });
 
 export const verifyEmailSchema = z.object({

@@ -9,7 +9,8 @@ import {
   type UserRepository,
 } from '../../domain/interfaces/user-repository';
 import { InvalidRefreshTokenException } from '../../infrastructure/exceptions/invalid-refresh-token.exception';
-import { AuthResponseDto } from '../dtos/auth-response.dto';
+import { UserMapper } from '../../infrastructure/mappers/user.mapper';
+import { AuthResponseDto } from 'src/shared/application/dtos/user-response.dto';
 
 @Injectable()
 export class RefreshTokenHandler {
@@ -37,6 +38,7 @@ export class RefreshTokenHandler {
       await this.tokenService.generateTokens({
         userId: user.id,
         email: user.email,
+        role: user.role,
       });
     const newHash = await this.hasher.hash(refreshToken);
     user.changeRefreshToken(newHash);
@@ -44,12 +46,7 @@ export class RefreshTokenHandler {
     return {
       refreshToken,
       accessToken,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        isVerified: user.isVerified,
-      },
+      user: UserMapper.toResponse(user),
     };
   }
 }

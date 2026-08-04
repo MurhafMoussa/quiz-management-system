@@ -10,7 +10,8 @@ import {
   USER_REPOSITORY_TOKEN,
   type UserRepository,
 } from '../../domain/interfaces/user-repository';
-import { AuthResponseDto } from '../dtos/auth-response.dto';
+import { UserMapper } from '../../infrastructure/mappers/user.mapper';
+import { AuthResponseDto } from 'src/shared/application/dtos/user-response.dto';
 import { LoginUserDto } from '../dtos/login-user.dto';
 
 @Injectable()
@@ -41,6 +42,7 @@ export class LoginHandler {
       await this.tokenService.generateTokens({
         email: existingUser.email,
         userId: existingUser.id,
+        role: existingUser.role,
       });
     const hashedRefreshToken = await this.hasher.hash(refreshToken);
     existingUser.changeRefreshToken(hashedRefreshToken);
@@ -48,12 +50,7 @@ export class LoginHandler {
     return {
       refreshToken,
       accessToken,
-      user: {
-        id: existingUser.id,
-        username: existingUser.username,
-        email: existingUser.email,
-        isVerified: existingUser.isVerified,
-      },
+      user: UserMapper.toResponse(existingUser),
     };
   }
 }

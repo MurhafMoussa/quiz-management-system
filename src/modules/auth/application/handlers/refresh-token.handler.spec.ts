@@ -11,6 +11,7 @@ import {
 } from '../../domain/interfaces/token.service';
 import { InvalidRefreshTokenException } from '../../infrastructure/exceptions/invalid-refresh-token.exception';
 import { User } from '../../domain/entities/user.entity';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 describe('RefreshTokenHandler', () => {
   let handler: RefreshTokenHandler;
@@ -50,10 +51,15 @@ describe('RefreshTokenHandler', () => {
 
   it('should successfully refresh access token with valid refresh token', async () => {
     const oldRefreshToken = 'valid-refresh-token';
-    const payload = { userId: 'user-id-1', email: 'john@example.com' };
+    const payload = {
+      userId: 'user-id-1',
+      email: 'john@example.com',
+      role: Role.STUDENT,
+    };
     const mockUser = User.rehydrate({
       id: 'user-id-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: 'stored-hashed-refresh',
@@ -87,9 +93,12 @@ describe('RefreshTokenHandler', () => {
       accessToken: 'new-access-token',
       user: {
         id: mockUser.id,
-        username: mockUser.username,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
         email: mockUser.email,
         isVerified: mockUser.isVerified,
+        role: mockUser.role,
+        profile: null,
       },
     });
   });
@@ -98,6 +107,7 @@ describe('RefreshTokenHandler', () => {
     tokenService.verifyRefreshToken.mockResolvedValue({
       userId: 'u-1',
       email: 'a@b.com',
+      role: Role.STUDENT,
     });
     userRepository.findById.mockResolvedValue(null);
 
@@ -109,7 +119,8 @@ describe('RefreshTokenHandler', () => {
   it('should throw InvalidRefreshTokenException if refresh tokens do not match', async () => {
     const mockUser = User.rehydrate({
       id: 'u-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: 'stored-hashed-refresh',
@@ -120,6 +131,7 @@ describe('RefreshTokenHandler', () => {
     tokenService.verifyRefreshToken.mockResolvedValue({
       userId: 'u-1',
       email: 'john@example.com',
+      role: Role.STUDENT,
     });
     userRepository.findById.mockResolvedValue(mockUser);
     hasher.compare.mockResolvedValue(false);

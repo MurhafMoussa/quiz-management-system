@@ -57,6 +57,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 #vs code generated folders
 .history
+.agents/
 src/generated/
 
 src/generated/i18n.generated.ts

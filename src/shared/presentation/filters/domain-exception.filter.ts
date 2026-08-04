@@ -19,7 +19,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
     const translatedMessage: string = i18n
       ? i18n.t(messageKey, { args: exception.args })
       : messageKey;
-    const statusCode = HttpStatus.BAD_REQUEST;
+    const statusCode = exception.code || HttpStatus.BAD_REQUEST;
     const apiErrorResponse: ApiErrorResponse = {
       message: translatedMessage,
       statusCode: statusCode,

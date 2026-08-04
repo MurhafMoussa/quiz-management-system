@@ -1,4 +1,5 @@
 {
     "INTERNAL_SERVER_ERROR": "An internal server error occurred.",   
-    "NOT_FOUND": "{resourceName} not found"   
+    "NOT_FOUND": "{resourceName} not found",
+    "ALREADY_EXISTS": "{resourceName} already exists"
 }

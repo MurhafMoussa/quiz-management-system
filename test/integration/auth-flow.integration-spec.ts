@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 
+import { EventEmitterModule } from '@nestjs/event-emitter';
+
 import { RegisterHandler } from '../../src/modules/auth/application/handlers/register.handler';
 import { LoginHandler } from '../../src/modules/auth/application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../src/modules/auth/application/handlers/refresh-token.handler';
-import { GetCurrentUserHandler } from '../../src/modules/auth/application/handlers/get-current-user.handler';
+import { GetMyProfileHandler } from '../../src/modules/profiles/application/handlers/get-my-profile.handler';
 
 import {
   USER_REPOSITORY_TOKEN,
@@ -20,7 +22,7 @@ import { JwtTokenService } from '../../src/modules/auth/infrastructure/services/
 import { UuidV7Generator } from '../../src/shared/infrastructure/services/uuid-v7-generator';
 import { User } from '../../src/modules/auth/domain/entities/user.entity';
 
-import { UserAlreadyExistException } from '../../src/modules/auth/domain/exceptions/user-already-exist.exception';
+import { AlreadyExistDomainException } from '../../src/shared/domain/exceptions/already-exist-domain.exception';
 import { InvalidCredentialsException } from '../../src/modules/auth/domain/exceptions/invalid-credentials.exception';
 import { InvalidRefreshTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-refresh-token.exception';
 
@@ -28,7 +30,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
   let registerHandler: RegisterHandler;
   let loginHandler: LoginHandler;
   let refreshTokenHandler: RefreshTokenHandler;
-  let getCurrentUserHandler: GetCurrentUserHandler;
+  let getMyProfileHandler: GetMyProfileHandler;
 
   const inMemoryUsers = new Map<string, User>();
 
@@ -60,12 +62,13 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),
         JwtModule.register({}),
+        EventEmitterModule.forRoot(),
       ],
       providers: [
         RegisterHandler,
         LoginHandler,
         RefreshTokenHandler,
-        GetCurrentUserHandler,
+        GetMyProfileHandler,
         { provide: USER_REPOSITORY_TOKEN, useValue: inMemoryRepository },
         { provide: HASHER_TOKEN, useClass: ArgonPasswordHasher },
         { provide: TOKEN_SERVICE_TOKEN, useClass: JwtTokenService },
@@ -76,9 +79,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     registerHandler = module.get<RegisterHandler>(RegisterHandler);
     loginHandler = module.get<LoginHandler>(LoginHandler);
     refreshTokenHandler = module.get<RefreshTokenHandler>(RefreshTokenHandler);
-    getCurrentUserHandler = module.get<GetCurrentUserHandler>(
-      GetCurrentUserHandler,
-    );
+    getMyProfileHandler = module.get<GetMyProfileHandler>(GetMyProfileHandler);
   });
 
   beforeEach(() => {
@@ -88,16 +89,26 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
   it('should execute full auth lifecycle: Register -> Login -> GetProfile -> RefreshToken', async () => {
     // 1. Register User
     const registerDto = {
-      username: 'alice',
+      firstName: 'Alice',
+      lastName: 'Smith',
       email: 'alice@example.com',
       password: 'SecurePassword123!',
       confirmPassword: 'SecurePassword123!',
     };
 
     const registerResult = await registerHandler.handle(registerDto);
-    expect(registerResult.user.username).toBe('alice');
+    expect(registerResult.user.firstName).toBe('Alice');
+    expect(registerResult.user.lastName).toBe('Smith');
     expect(registerResult.accessToken).toBeDefined();
     expect(registerResult.refreshToken).toBeDefined();
+
+    // Verify user email so login can succeed
+    const userToVerify =
+      await inMemoryRepository.findByEmail('alice@example.com');
+    if (userToVerify) {
+      userToVerify.markAsVerified();
+      await inMemoryRepository.save(userToVerify);
+    }
 
     // 2. Login User
     const loginResult = await loginHandler.handle({
@@ -107,8 +118,9 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     expect(loginResult.user.id).toBe(registerResult.user.id);
 
     // 3. Get Current User Profile
-    const profile = await getCurrentUserHandler.handle(loginResult.user.id);
-    expect(profile.username).toBe('alice');
+    const profile = await getMyProfileHandler.handle(loginResult.user.id);
+    expect(profile.firstName).toBe('Alice');
+    expect(profile.lastName).toBe('Smith');
 
     // 4. Refresh Token (Token Rotation)
     const refreshResult = await refreshTokenHandler.handle(
@@ -121,7 +133,8 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
 
   it('should reject registration when email already exists', async () => {
     const registerDto = {
-      username: 'alice',
+      firstName: 'Alice',
+      lastName: 'Smith',
       email: 'alice@example.com',
       password: 'SecurePassword123!',
       confirmPassword: 'SecurePassword123!',
@@ -130,17 +143,25 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     await registerHandler.handle(registerDto);
 
     await expect(registerHandler.handle(registerDto)).rejects.toThrow(
-      UserAlreadyExistException,
+      AlreadyExistDomainException,
     );
   });
 
   it('should reject login with wrong password using real Argon2 comparison', async () => {
     await registerHandler.handle({
-      username: 'alice',
+      firstName: 'Alice',
+      lastName: 'Smith',
       email: 'alice@example.com',
       password: 'SecurePassword123!',
       confirmPassword: 'SecurePassword123!',
     });
+
+    const userToVerify =
+      await inMemoryRepository.findByEmail('alice@example.com');
+    if (userToVerify) {
+      userToVerify.markAsVerified();
+      await inMemoryRepository.save(userToVerify);
+    }
 
     await expect(
       loginHandler.handle({
@@ -152,7 +173,8 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
 
   it('should invalidate old refresh token after token rotation occurs', async () => {
     const registerRes = await registerHandler.handle({
-      username: 'alice',
+      firstName: 'Alice',
+      lastName: 'Smith',
       email: 'alice@example.com',
       password: 'SecurePassword123!',
       confirmPassword: 'SecurePassword123!',

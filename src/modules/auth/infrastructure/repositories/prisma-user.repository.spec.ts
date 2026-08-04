@@ -37,7 +37,8 @@ describe('PrismaUserRepository', () => {
   it('should find user by id and return domain entity', async () => {
     const rawUser = {
       id: 'u-1',
-      username: 'john',
+      first_name: 'John',
+      last_name: 'Doe',
       email: 'john@example.com',
       password_hash: 'passHash',
       refresh_token_hash: 'refHash',
@@ -50,6 +51,7 @@ describe('PrismaUserRepository', () => {
 
     expect(prismaService.user.findUnique).toHaveBeenCalledWith({
       where: { id: 'u-1' },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
     expect(result?.id).toBe('u-1');
@@ -65,7 +67,8 @@ describe('PrismaUserRepository', () => {
   it('should find user by email and return domain entity', async () => {
     const rawUser = {
       id: 'u-1',
-      username: 'john',
+      first_name: 'John',
+      last_name: 'Doe',
       email: 'john@example.com',
       password_hash: 'passHash',
       refresh_token_hash: null,
@@ -78,6 +81,7 @@ describe('PrismaUserRepository', () => {
 
     expect(prismaService.user.findUnique).toHaveBeenCalledWith({
       where: { email: 'john@example.com' },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
   });
@@ -85,7 +89,8 @@ describe('PrismaUserRepository', () => {
   it('should save domain user to database and return saved domain entity', async () => {
     const domainUser = User.create({
       id: 'u-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'passHash',
       refreshTokenHash: 'refHash',
@@ -93,10 +98,13 @@ describe('PrismaUserRepository', () => {
 
     const rawSavedUser = {
       id: domainUser.id,
-      username: domainUser.username,
+      first_name: domainUser.firstName,
+      last_name: domainUser.lastName,
       email: domainUser.email,
       password_hash: domainUser.passwordHash,
       refresh_token_hash: domainUser.refreshTokenHash,
+      is_verified: domainUser.isVerified,
+      role: domainUser.role,
       created_at: domainUser.createdAt,
       updated_at: domainUser.updatedAt,
     };
@@ -109,6 +117,7 @@ describe('PrismaUserRepository', () => {
       where: { id: domainUser.id },
       create: expect.any(Object),
       update: expect.any(Object),
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
     expect(result.id).toBe('u-1');

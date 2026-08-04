@@ -1,5 +1,6 @@
 import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { AuthGuard } from './auth.guard';
 import {
   TOKEN_SERVICE_TOKEN,
@@ -45,7 +46,11 @@ describe('AuthGuard', () => {
 
   it('should allow access and attach payload to request if valid Bearer token is provided', async () => {
     const context = createMockContext('Bearer valid-token');
-    const payload = { userId: 'u-1', email: 'john@example.com' };
+    const payload = {
+      userId: 'u-1',
+      email: 'john@example.com',
+      role: Role.STUDENT,
+    };
     tokenService.verifyAccessToken.mockResolvedValue(payload);
 
     const result = await guard.canActivate(context);

@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { InvalidOtpCodeException } from '../../domain/exceptions/invalid-otp-code.exception';
 import { OtpExpiredOrInvalidException } from '../../domain/exceptions/otp-expired-or-invalid.exception';
 import { TooManyOtpAttemptsException } from '../../domain/exceptions/too-many-otp-attempts.exception';
-import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception';
 import { HASHER_TOKEN } from '../../domain/interfaces/hasher';
 import { OTP_REPOSITORY_TOKEN } from '../../domain/interfaces/otp-repository';
 import { USER_REPOSITORY_TOKEN } from '../../domain/interfaces/user-repository';
@@ -91,7 +91,7 @@ describe('VerifyEmailHandler', () => {
     expect(otpRepoMock.deleteOtp).toHaveBeenCalledWith('user-123');
   });
 
-  it('should throw UserNotFoundException if user entity is not found in repository', async () => {
+  it('should throw NotFoundDomainException if user entity is not found in repository', async () => {
     otpRepoMock.getOtp.mockResolvedValue({
       codeHash: 'hash123',
       attempts: 0,
@@ -100,14 +100,15 @@ describe('VerifyEmailHandler', () => {
     userRepoMock.findById.mockResolvedValue(null);
 
     await expect(handler.execute('user-123', '123456')).rejects.toThrow(
-      UserNotFoundException,
+      NotFoundDomainException,
     );
   });
 
   it('should mark user as verified, save user, and delete OTP on success', async () => {
     const user = User.create({
       id: 'user-123',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'passhash',
       refreshTokenHash: undefined,

@@ -22,6 +22,7 @@ import KeyvRedis from '@keyv/redis';
 import { Keyv } from 'keyv';
 import { TimeUtils } from './shared/utils/time.utils';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ProfileModule } from './modules/profiles/profiles.module';
 @Module({
   imports: [
     CacheModule.registerAsync({
@@ -66,6 +67,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     SharedModule,
     AuthModule,
     NotificationsModule,
+    ProfileModule,
   ],
   providers: [
     {
