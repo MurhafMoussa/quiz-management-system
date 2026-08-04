@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { MAX_OTP_ATTEMPTS } from '../../domain/constants/otp.constants';
 import { InvalidOtpCodeException } from '../../domain/exceptions/invalid-otp-code.exception';
 import { OtpExpiredOrInvalidException } from '../../domain/exceptions/otp-expired-or-invalid.exception';
 import { TooManyOtpAttemptsException } from '../../domain/exceptions/too-many-otp-attempts.exception';
-import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception';
 import { HASHER_TOKEN, type Hasher } from '../../domain/interfaces/hasher';
 import {
   OTP_REPOSITORY_TOKEN,
@@ -47,7 +47,7 @@ export class VerifyEmailHandler {
 
     const user = await this.userRepo.findById(userId);
     if (!user) {
-      throw new UserNotFoundException();
+      throw new NotFoundDomainException({ resourceName: 'User' });
     }
 
     user.markAsVerified();

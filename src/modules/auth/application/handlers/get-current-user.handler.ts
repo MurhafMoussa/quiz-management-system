@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-dound-domain.exception';
+import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import {
   USER_REPOSITORY_TOKEN,
   type UserRepository,
@@ -25,6 +25,7 @@ export class GetCurrentUserHandler {
       firstName: existingUser.firstName,
       lastName: existingUser.lastName,
       isVerified: existingUser.isVerified,
+      role: existingUser.role,
     };
   }
 }

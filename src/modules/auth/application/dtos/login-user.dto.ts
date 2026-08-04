@@ -5,6 +5,7 @@ const LoginUserSchema = BaseUserSchema.omit({
   firstName: true,
   lastName: true,
   isVerified: true,
+  role: true,
 }).extend({
   password: passwordSchema,
 });

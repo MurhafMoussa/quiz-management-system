@@ -41,6 +41,7 @@ export class LoginHandler {
       await this.tokenService.generateTokens({
         email: existingUser.email,
         userId: existingUser.id,
+        role: existingUser.role,
       });
     const hashedRefreshToken = await this.hasher.hash(refreshToken);
     existingUser.changeRefreshToken(hashedRefreshToken);
@@ -54,6 +55,7 @@ export class LoginHandler {
         lastName: existingUser.lastName,
         email: existingUser.email,
         isVerified: existingUser.isVerified,
+        role: existingUser.role,
       },
     };
   }

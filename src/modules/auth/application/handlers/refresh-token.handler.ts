@@ -37,6 +37,7 @@ export class RefreshTokenHandler {
       await this.tokenService.generateTokens({
         userId: user.id,
         email: user.email,
+        role: user.role,
       });
     const newHash = await this.hasher.hash(refreshToken);
     user.changeRefreshToken(newHash);
@@ -50,6 +51,7 @@ export class RefreshTokenHandler {
         lastName: user.lastName,
         email: user.email,
         isVerified: user.isVerified,
+        role: user.role,
       },
     };
   }
