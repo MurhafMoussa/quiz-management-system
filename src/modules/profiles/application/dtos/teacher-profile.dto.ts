@@ -5,7 +5,7 @@ export const CreateTeacherProfileSchema = z.object({
   title: z.string().optional(),
   bio: z.string().optional(),
   department: z.string().optional(),
-  subjectSpecialties: z.array(z.string()).optional().default([]),
+  subjectSpecialties: z.array(z.string()).optional(),
 });
 
 export const UpdateTeacherProfileSchema = z.object({

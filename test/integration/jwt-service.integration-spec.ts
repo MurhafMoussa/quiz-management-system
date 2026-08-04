@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { JwtTokenService } from '../../src/modules/auth/infrastructure/services/jwt.service';
+import { Role } from '../../src/shared/domain/enums/role.enum';
 import { InvalidAccessTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-access-token.exception';
 import { InvalidRefreshTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-refresh-token.exception';
 
@@ -26,7 +27,11 @@ describe('JwtTokenService Integration', () => {
   });
 
   it('should generate real JWT tokens and verify access token payload', async () => {
-    const payload = { userId: 'user-uuid-v7', email: 'test@example.com' };
+    const payload = {
+      userId: 'user-uuid-v7',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     const tokens = await tokenService.generateTokens(payload);
 
     expect(tokens.accessToken).toBeDefined();
@@ -41,7 +46,11 @@ describe('JwtTokenService Integration', () => {
   });
 
   it('should verify real refresh token payload', async () => {
-    const payload = { userId: 'user-uuid-v7', email: 'test@example.com' };
+    const payload = {
+      userId: 'user-uuid-v7',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     const tokens = await tokenService.generateTokens(payload);
 
     const verifiedRefresh = await tokenService.verifyRefreshToken(
@@ -52,7 +61,11 @@ describe('JwtTokenService Integration', () => {
   });
 
   it('should reject access token when verified with refresh token secret', async () => {
-    const payload = { userId: 'user-uuid-v7', email: 'test@example.com' };
+    const payload = {
+      userId: 'user-uuid-v7',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     const tokens = await tokenService.generateTokens(payload);
 
     await expect(

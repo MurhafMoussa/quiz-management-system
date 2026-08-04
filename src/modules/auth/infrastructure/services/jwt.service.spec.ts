@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtTokenService } from './jwt.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { InvalidAccessTokenException } from '../exceptions/invalid-access-token.exception';
 import { InvalidRefreshTokenException } from '../exceptions/invalid-refresh-token.exception';
 
@@ -44,7 +45,11 @@ describe('JwtTokenService', () => {
       .mockResolvedValueOnce('acc-token')
       .mockResolvedValueOnce('ref-token');
 
-    const payload = { userId: 'u-1', email: 'test@example.com' };
+    const payload = {
+      userId: 'u-1',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     const result = await service.generateTokens(payload);
 
     expect(jwtService.signAsync).toHaveBeenNthCalledWith(1, payload, {
@@ -62,7 +67,11 @@ describe('JwtTokenService', () => {
   });
 
   it('should verify access token successfully', async () => {
-    const payload = { userId: 'u-1', email: 'test@example.com' };
+    const payload = {
+      userId: 'u-1',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     jwtService.verifyAsync.mockResolvedValue(payload);
 
     const result = await service.verifyAccessToken('valid-access-token');
@@ -82,7 +91,11 @@ describe('JwtTokenService', () => {
   });
 
   it('should verify refresh token successfully', async () => {
-    const payload = { userId: 'u-1', email: 'test@example.com' };
+    const payload = {
+      userId: 'u-1',
+      email: 'test@example.com',
+      role: Role.STUDENT,
+    };
     jwtService.verifyAsync.mockResolvedValue(payload);
 
     const result = await service.verifyRefreshToken('valid-refresh-token');

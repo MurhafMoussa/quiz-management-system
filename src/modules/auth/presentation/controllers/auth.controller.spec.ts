@@ -63,6 +63,7 @@ describe('AuthController', () => {
         email: 'john@example.com',
         isVerified: false,
         role: Role.STUDENT,
+        profile: null,
       },
     };
     registerHandler.handle.mockResolvedValue(expectedResponse);
@@ -85,6 +86,7 @@ describe('AuthController', () => {
         email: 'john@example.com',
         isVerified: false,
         role: Role.STUDENT,
+        profile: null,
       },
     };
     loginHandler.handle.mockResolvedValue(expectedResponse);
@@ -98,8 +100,8 @@ describe('AuthController', () => {
   it('should call refreshTokenHandler on refresh()', async () => {
     const dto = { refreshToken: 'old-ref' };
     const expectedResponse = {
-      accessToken: 'new-acc',
-      refreshToken: 'old-ref',
+      accessToken: 'acc',
+      refreshToken: 'ref',
       user: {
         id: 'u-1',
         firstName: 'John',
@@ -107,6 +109,7 @@ describe('AuthController', () => {
         email: 'john@example.com',
         isVerified: false,
         role: Role.STUDENT,
+        profile: null,
       },
     };
     refreshTokenHandler.handle.mockResolvedValue(expectedResponse);
