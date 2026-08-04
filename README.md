@@ -65,7 +65,7 @@ graph TD
         RH[RegisterHandler]
         LH[LoginHandler]
         RTH[RefreshTokenHandler]
-        GCU[GetCurrentUserHandler]
+        GMP[GetMyProfileHandler]
         VEH[VerifyEmailHandler]
     end
 
@@ -202,9 +202,14 @@ src/
 | :--- | :--- | :--- | :--- |
 | `POST` | `/auth/register` | No | Registers a new user, sends email verification OTP |
 | `POST` | `/auth/verify-email` | No | Verifies email address using 6-digit OTP code |
-| `POST` | `/auth/login` | No | Authenticates verified user, returns access & refresh tokens |
-| `POST` | `/auth/refresh` | No | Rotates refresh token and returns new access token |
-| `POST` | `/auth/me` | Yes (Bearer) | Retrieves current authenticated user profile |
+| `POST` | `/auth/login` | No | Authenticates verified user, returns access & refresh tokens (with unified profile payload) |
+| `POST` | `/auth/refresh` | No | Rotates refresh token and returns new access token (with unified profile payload) |
+| `PATCH` | `/auth/users/:userId/role` | Yes (Bearer, ADMIN) | Updates user system role |
+| `GET` | `/profiles/me` | Yes (Bearer) | Retrieves current logged-in user details and their profile (unified response) |
+| `POST` | `/profiles/student` | Yes (Bearer) | Creates a student profile for the current user |
+| `PATCH` | `/profiles/student` | Yes (Bearer) | Updates a student profile for the current user |
+| `POST` | `/profiles/teacher` | Yes (Bearer) | Creates a teacher profile for the current user |
+| `PATCH` | `/profiles/teacher` | Yes (Bearer) | Updates a teacher profile for the current user |
 
 ---
 
