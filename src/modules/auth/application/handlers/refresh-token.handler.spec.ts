@@ -53,7 +53,8 @@ describe('RefreshTokenHandler', () => {
     const payload = { userId: 'user-id-1', email: 'john@example.com' };
     const mockUser = User.rehydrate({
       id: 'user-id-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: 'stored-hashed-refresh',
@@ -87,7 +88,8 @@ describe('RefreshTokenHandler', () => {
       accessToken: 'new-access-token',
       user: {
         id: mockUser.id,
-        username: mockUser.username,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
         email: mockUser.email,
         isVerified: mockUser.isVerified,
       },
@@ -109,7 +111,8 @@ describe('RefreshTokenHandler', () => {
   it('should throw InvalidRefreshTokenException if refresh tokens do not match', async () => {
     const mockUser = User.rehydrate({
       id: 'u-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: 'stored-hashed-refresh',

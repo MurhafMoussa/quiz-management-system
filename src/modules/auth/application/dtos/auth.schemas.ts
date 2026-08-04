@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import * as constants from 'src/shared/domain/constants/validation-constants';
+import { z } from 'zod';
 
 export const usernameSchema = z
   .string({ error: 'validation.FIELD_REQUIRED' })
@@ -17,7 +17,8 @@ export const passwordSchema = z
 
 export const BaseUserSchema = z.object({
   id: z.uuid(),
-  username: usernameSchema,
+  firstName: usernameSchema,
+  lastName: usernameSchema,
   email: emailSchema,
   isVerified: z.boolean(),
 });

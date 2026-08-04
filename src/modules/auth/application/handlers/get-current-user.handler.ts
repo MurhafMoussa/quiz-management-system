@@ -22,7 +22,8 @@ export class GetCurrentUserHandler {
     return {
       email: existingUser.email,
       id: existingUser.id,
-      username: existingUser.username,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
       isVerified: existingUser.isVerified,
     };
   }

@@ -68,7 +68,8 @@ describe('RegisterHandler', () => {
 
   it('should successfully register a new user', async () => {
     const registerDto = {
-      username: 'johndoe',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       password: 'password123',
       confirmPassword: 'password123',
@@ -104,7 +105,8 @@ describe('RegisterHandler', () => {
       refreshToken: 'refresh-token',
       user: {
         id: 'generated-uuid',
-        username: registerDto.username,
+        firstName: registerDto.firstName,
+        lastName: registerDto.lastName,
         email: registerDto.email,
         isVerified: false,
       },
@@ -113,7 +115,8 @@ describe('RegisterHandler', () => {
 
   it('should throw UserAlreadyExistException if user email already exists', async () => {
     const registerDto = {
-      username: 'johndoe',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       password: 'password123',
       confirmPassword: 'password123',
@@ -121,7 +124,8 @@ describe('RegisterHandler', () => {
 
     const existingUser = User.create({
       id: 'existing-id',
-      username: 'johndoe',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: undefined,

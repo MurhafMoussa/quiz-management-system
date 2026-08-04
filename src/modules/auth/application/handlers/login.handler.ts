@@ -50,7 +50,8 @@ export class LoginHandler {
       accessToken,
       user: {
         id: existingUser.id,
-        username: existingUser.username,
+        firstName: existingUser.firstName,
+        lastName: existingUser.lastName,
         email: existingUser.email,
         isVerified: existingUser.isVerified,
       },

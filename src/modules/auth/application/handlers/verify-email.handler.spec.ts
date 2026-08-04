@@ -107,7 +107,8 @@ describe('VerifyEmailHandler', () => {
   it('should mark user as verified, save user, and delete OTP on success', async () => {
     const user = User.create({
       id: 'user-123',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'passhash',
       refreshTokenHash: undefined,

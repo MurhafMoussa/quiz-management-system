@@ -53,7 +53,8 @@ describe('LoginHandler', () => {
     const loginDto = { email: 'john@example.com', password: 'password123' };
     const mockUser = User.rehydrate({
       id: 'user-id-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'hashedPass',
       refreshTokenHash: undefined,
@@ -85,7 +86,8 @@ describe('LoginHandler', () => {
       refreshToken: 'ref-token',
       user: {
         id: mockUser.id,
-        username: mockUser.username,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
         email: mockUser.email,
         isVerified: mockUser.isVerified,
       },
@@ -103,7 +105,8 @@ describe('LoginHandler', () => {
   it('should throw InvalidCredentialsException when password does not match', async () => {
     const mockUser = User.rehydrate({
       id: 'user-id-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'hashedPass',
       refreshTokenHash: undefined,
@@ -123,7 +126,8 @@ describe('LoginHandler', () => {
   it('should throw UserNotVerifiedException when user is not verified', async () => {
     const mockUnverifiedUser = User.rehydrate({
       id: 'user-id-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'hashedPass',
       refreshTokenHash: undefined,

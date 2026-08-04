@@ -31,7 +31,8 @@ describe('GetCurrentUserHandler', () => {
   it('should return user response DTO if user exists', async () => {
     const mockUser = User.rehydrate({
       id: 'user-123',
-      username: 'johndoe',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'hash',
       refreshTokenHash: undefined,
@@ -46,7 +47,8 @@ describe('GetCurrentUserHandler', () => {
     expect(userRepository.findById).toHaveBeenCalledWith('user-123');
     expect(result).toEqual({
       id: 'user-123',
-      username: 'johndoe',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       isVerified: false,
     });

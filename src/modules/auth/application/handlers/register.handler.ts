@@ -42,7 +42,8 @@ export class RegisterHandler {
     const hashedRefreshToken = await this.hasher.hash(refreshToken);
     const user = User.create({
       id,
-      username: dto.username,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       email: dto.email,
       passwordHash,
       refreshTokenHash: hashedRefreshToken,
@@ -57,7 +58,8 @@ export class RegisterHandler {
       accessToken,
       user: {
         id: user.id,
-        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         isVerified: user.isVerified,
       },

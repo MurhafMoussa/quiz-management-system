@@ -58,11 +58,7 @@ describe('UserRegisteredListener', () => {
   });
 
   it('should generate OTP, hash it, store in Redis with TTLs, and send email notification', async () => {
-    const event = new UserRegisteredEvent(
-      'user-123',
-      'johndoe',
-      'john@example.com',
-    );
+    const event = new UserRegisteredEvent('user-123', 'john@example.com');
 
     await listener.handle(event);
 
