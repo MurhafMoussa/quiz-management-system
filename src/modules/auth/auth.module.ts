@@ -16,7 +16,10 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { RefreshTokenHandler } from './application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from './application/handlers/get-current-user.handler';
 import { VerifyEmailHandler } from './application/handlers/verify-email.handler';
+import { UpdateUserRoleHandler } from './application/handlers/update-user-role.handler';
 import { UserRegisteredListener } from './application/listeners/user-registered.listener';
+import { AuthGuard } from './presentation/guards/auth.guard';
+import { RolesGuard } from './presentation/guards/roles.guard';
 
 @Module({
   imports: [
@@ -39,7 +42,10 @@ import { UserRegisteredListener } from './application/listeners/user-registered.
     RefreshTokenHandler,
     GetCurrentUserHandler,
     VerifyEmailHandler,
+    UpdateUserRoleHandler,
     UserRegisteredListener,
+    AuthGuard,
+    RolesGuard,
     {
       provide: HASHER_TOKEN,
       useClass: ArgonPasswordHasher,
@@ -57,5 +63,6 @@ import { UserRegisteredListener } from './application/listeners/user-registered.
       useClass: RedisOtpRepository,
     },
   ],
+  exports: [USER_REPOSITORY_TOKEN, TOKEN_SERVICE_TOKEN, AuthGuard, RolesGuard],
 })
 export class AuthModule {}

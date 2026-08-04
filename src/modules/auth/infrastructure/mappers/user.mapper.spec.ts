@@ -13,6 +13,8 @@ describe('UserMapper', () => {
     password_hash: 'hashedPassword',
     refresh_token_hash: 'hashedRefreshToken',
     is_verified: false,
+    role: 'STUDENT',
+    avatar_url: null,
     created_at: date,
     updated_at: date,
   };
@@ -63,6 +65,7 @@ describe('UserMapper', () => {
       password_hash: 'hashedPassword',
       refresh_token_hash: 'hashedRefreshToken',
       is_verified: false,
+      role: 'STUDENT',
       created_at: date,
       updated_at: date,
     });

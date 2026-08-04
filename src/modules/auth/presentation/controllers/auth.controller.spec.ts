@@ -5,7 +5,9 @@ import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
 import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
 import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
+import { UpdateUserRoleHandler } from '../../application/handlers/update-user-role.handler';
 import { TOKEN_SERVICE_TOKEN } from '../../domain/interfaces/token.service';
+import { Role } from '../../domain/enums/role.enum';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -14,6 +16,7 @@ describe('AuthController', () => {
   let refreshTokenHandler: jest.Mocked<RefreshTokenHandler>;
   let getCurrentUserHandler: jest.Mocked<GetCurrentUserHandler>;
   let verifyEmailHandler: jest.Mocked<VerifyEmailHandler>;
+  let updateUserRoleHandler: jest.Mocked<UpdateUserRoleHandler>;
 
   beforeEach(async () => {
     registerHandler = { handle: jest.fn() } as any;
@@ -21,6 +24,7 @@ describe('AuthController', () => {
     refreshTokenHandler = { handle: jest.fn() } as any;
     getCurrentUserHandler = { handle: jest.fn() } as any;
     verifyEmailHandler = { execute: jest.fn() } as any;
+    updateUserRoleHandler = { handle: jest.fn() } as any;
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -30,6 +34,7 @@ describe('AuthController', () => {
         { provide: RefreshTokenHandler, useValue: refreshTokenHandler },
         { provide: GetCurrentUserHandler, useValue: getCurrentUserHandler },
         { provide: VerifyEmailHandler, useValue: verifyEmailHandler },
+        { provide: UpdateUserRoleHandler, useValue: updateUserRoleHandler },
         {
           provide: TOKEN_SERVICE_TOKEN,
           useValue: {
@@ -61,6 +66,7 @@ describe('AuthController', () => {
         lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
+        role: Role.STUDENT,
       },
     };
     registerHandler.handle.mockResolvedValue(expectedResponse);
@@ -82,6 +88,7 @@ describe('AuthController', () => {
         lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
+        role: Role.STUDENT,
       },
     };
     loginHandler.handle.mockResolvedValue(expectedResponse);
@@ -103,6 +110,7 @@ describe('AuthController', () => {
         lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
+        role: Role.STUDENT,
       },
     };
     refreshTokenHandler.handle.mockResolvedValue(expectedResponse);
@@ -114,13 +122,18 @@ describe('AuthController', () => {
   });
 
   it('should call getCurrentUserHandler on getCurrentUser()', async () => {
-    const payload = { userId: 'u-1', email: 'john@example.com' };
+    const payload = {
+      userId: 'u-1',
+      email: 'john@example.com',
+      role: Role.STUDENT,
+    };
     const expectedResponse = {
       id: 'u-1',
       firstName: 'John',
       lastName: 'Doe',
       email: 'john@example.com',
       isVerified: false,
+      role: Role.STUDENT,
     };
     getCurrentUserHandler.handle.mockResolvedValue(expectedResponse);
 

@@ -4,6 +4,8 @@ import {
   HttpCode,
   HttpStatus,
   Injectable,
+  Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -12,15 +14,21 @@ import { ResponseMessage } from 'src/shared/presentation/decorators/response-mes
 import { LoginUserDto } from '../../application/dtos/login-user.dto';
 import { RefreshTokenDto } from '../../application/dtos/refresh-token.dto';
 import { RegisterUserDto } from '../../application/dtos/register-user.dto';
+import { UpdateUserRoleDto } from '../../application/dtos/update-user-role.dto';
 import { VerifyEmailDto } from '../../application/dtos/verify-email.dto';
 import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
 import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
 import { RegisterHandler } from '../../application/handlers/register.handler';
+import { UpdateUserRoleHandler } from '../../application/handlers/update-user-role.handler';
 import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
+import { Role } from '../../domain/enums/role.enum';
 import type { TokenPayload } from '../../domain/interfaces/token-payload';
 import { CurrentUser } from '../decorators/current-user.decorator';
+import { Roles } from '../decorators/roles.decorator';
 import { AuthGuard } from '../guards/auth.guard';
+import { RolesGuard } from '../guards/roles.guard';
+
 @Injectable()
 @Controller('auth')
 export class AuthController {
@@ -30,6 +38,7 @@ export class AuthController {
     private readonly refreshTokenHandler: RefreshTokenHandler,
     private readonly getCurrentUserHandler: GetCurrentUserHandler,
     private readonly verifyEmailHandler: VerifyEmailHandler,
+    private readonly updateUserRoleHandler: UpdateUserRoleHandler,
   ) {}
   @Post('register')
   @ResponseMessage('auth.USER_REGISTERED_SUCCESSFULLY')
@@ -62,5 +71,18 @@ export class AuthController {
   @ResponseMessage('auth.EMAIL_VERIFIED_SUCCESSFULLY')
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     return this.verifyEmailHandler.execute(dto.userId, dto.code);
+  }
+
+  @Patch('users/:userId/role')
+  @HttpCode(HttpStatus.OK)
+  @ResponseMessage('auth.USER_ROLE_UPDATED_SUCCESSFULLY')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  async updateRole(
+    @Param('userId') userId: string,
+    @Body() dto: UpdateUserRoleDto,
+  ) {
+    return this.updateUserRoleHandler.handle(userId, dto);
   }
 }

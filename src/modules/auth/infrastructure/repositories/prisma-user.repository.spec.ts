@@ -101,6 +101,8 @@ describe('PrismaUserRepository', () => {
       email: domainUser.email,
       password_hash: domainUser.passwordHash,
       refresh_token_hash: domainUser.refreshTokenHash,
+      is_verified: domainUser.isVerified,
+      role: domainUser.role,
       created_at: domainUser.createdAt,
       updated_at: domainUser.updatedAt,
     };

@@ -1,4 +1,5 @@
 import { AggregateRoot } from 'src/shared/domain/entities/aggrigate-root';
+import { Role } from '../enums/role.enum';
 import { UserRegisteredEvent } from '../events/user-registered.event';
 
 export class User extends AggregateRoot {
@@ -10,6 +11,7 @@ export class User extends AggregateRoot {
     private _passwordHash: string,
     private _refreshTokenHash: string | undefined,
     private _isVerified: boolean,
+    private _role: Role,
     public readonly createdAt: Date,
     private _updatedAt: Date,
   ) {
@@ -23,6 +25,7 @@ export class User extends AggregateRoot {
     passwordHash: string;
     refreshTokenHash: string | undefined;
     isVerified?: boolean;
+    role?: Role;
   }): User {
     const now = new Date();
     const user = new User(
@@ -33,6 +36,7 @@ export class User extends AggregateRoot {
       params.passwordHash,
       params.refreshTokenHash,
       params.isVerified ?? false,
+      params.role ?? Role.STUDENT,
       now,
       now,
     );
@@ -48,6 +52,7 @@ export class User extends AggregateRoot {
     passwordHash: string;
     refreshTokenHash: string | undefined;
     isVerified?: boolean;
+    role?: Role;
 
     createdAt: Date;
     updatedAt: Date;
@@ -60,6 +65,7 @@ export class User extends AggregateRoot {
       params.passwordHash,
       params.refreshTokenHash,
       params.isVerified ?? false,
+      params.role ?? Role.STUDENT,
       params.createdAt,
       params.updatedAt,
     );
@@ -88,12 +94,19 @@ export class User extends AggregateRoot {
   get isVerified() {
     return this._isVerified;
   }
+  get role() {
+    return this._role;
+  }
   changeFirstName(firstName: string) {
     this._firstName = firstName;
     this.touch();
   }
   changeLastName(lastName: string) {
     this._lastName = lastName;
+    this.touch();
+  }
+  changeRole(role: Role) {
+    this._role = role;
     this.touch();
   }
   changePassword(passwordHash: string) {

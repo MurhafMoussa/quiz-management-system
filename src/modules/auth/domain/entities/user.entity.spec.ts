@@ -1,5 +1,6 @@
 import { User } from './user.entity';
 import { UserRegisteredEvent } from '../events/user-registered.event';
+import { Role } from '../enums/role.enum';
 
 describe('User Domain Entity', () => {
   it('should create a new user entity using create() and record UserRegisteredEvent', () => {
@@ -21,6 +22,7 @@ describe('User Domain Entity', () => {
     expect(user.passwordHash).toBe(params.passwordHash);
     expect(user.refreshTokenHash).toBeUndefined();
     expect(user.isVerified).toBe(false);
+    expect(user.role).toBe(Role.STUDENT);
     expect(user.createdAt).toBeInstanceOf(Date);
     expect(user.updatedAt).toBeInstanceOf(Date);
 
@@ -86,5 +88,8 @@ describe('User Domain Entity', () => {
 
     user.markAsVerified();
     expect(user.isVerified).toBe(true);
+
+    user.changeRole(Role.ADMIN);
+    expect(user.role).toBe(Role.ADMIN);
   });
 });
