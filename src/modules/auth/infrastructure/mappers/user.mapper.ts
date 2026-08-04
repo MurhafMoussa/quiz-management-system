@@ -5,7 +5,8 @@ export class UserMapper {
   static toDomain(raw: PrismaUser): User {
     return User.rehydrate({
       id: raw.id,
-      username: raw.username,
+      firstName: raw.first_name,
+      lastName: raw.last_name,
       email: raw.email,
       passwordHash: raw.password_hash,
       refreshTokenHash: raw.refresh_token_hash ?? undefined,
@@ -18,7 +19,8 @@ export class UserMapper {
   static toPersistence(user: User) {
     return {
       id: user.id,
-      username: user.username,
+      first_name: user.firstName,
+      last_name: user.lastName,
       email: user.email,
       password_hash: user.passwordHash,
       refresh_token_hash: user.refreshTokenHash,

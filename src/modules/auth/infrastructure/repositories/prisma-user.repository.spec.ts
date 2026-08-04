@@ -37,7 +37,8 @@ describe('PrismaUserRepository', () => {
   it('should find user by id and return domain entity', async () => {
     const rawUser = {
       id: 'u-1',
-      username: 'john',
+      first_name: 'John',
+      last_name: 'Doe',
       email: 'john@example.com',
       password_hash: 'passHash',
       refresh_token_hash: 'refHash',
@@ -65,7 +66,8 @@ describe('PrismaUserRepository', () => {
   it('should find user by email and return domain entity', async () => {
     const rawUser = {
       id: 'u-1',
-      username: 'john',
+      first_name: 'John',
+      last_name: 'Doe',
       email: 'john@example.com',
       password_hash: 'passHash',
       refresh_token_hash: null,
@@ -85,7 +87,8 @@ describe('PrismaUserRepository', () => {
   it('should save domain user to database and return saved domain entity', async () => {
     const domainUser = User.create({
       id: 'u-1',
-      username: 'john',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'john@example.com',
       passwordHash: 'passHash',
       refreshTokenHash: 'refHash',
@@ -93,7 +96,8 @@ describe('PrismaUserRepository', () => {
 
     const rawSavedUser = {
       id: domainUser.id,
-      username: domainUser.username,
+      first_name: domainUser.firstName,
+      last_name: domainUser.lastName,
       email: domainUser.email,
       password_hash: domainUser.passwordHash,
       refresh_token_hash: domainUser.refreshTokenHash,

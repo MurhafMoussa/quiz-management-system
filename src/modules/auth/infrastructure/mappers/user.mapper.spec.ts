@@ -7,7 +7,8 @@ describe('UserMapper', () => {
 
   const rawPrismaUser: PrismaUser = {
     id: 'user-123',
-    username: 'testuser',
+    first_name: 'John',
+    last_name: 'Doe',
     email: 'test@example.com',
     password_hash: 'hashedPassword',
     refresh_token_hash: 'hashedRefreshToken',
@@ -21,7 +22,8 @@ describe('UserMapper', () => {
 
     expect(domainUser).toBeInstanceOf(User);
     expect(domainUser.id).toBe(rawPrismaUser.id);
-    expect(domainUser.username).toBe(rawPrismaUser.username);
+    expect(domainUser.firstName).toBe(rawPrismaUser.first_name);
+    expect(domainUser.lastName).toBe(rawPrismaUser.last_name);
     expect(domainUser.email).toBe(rawPrismaUser.email);
     expect(domainUser.passwordHash).toBe(rawPrismaUser.password_hash);
     expect(domainUser.refreshTokenHash).toBe(rawPrismaUser.refresh_token_hash);
@@ -42,7 +44,8 @@ describe('UserMapper', () => {
   it('should map domain User entity to Prisma persistence object (toPersistence)', () => {
     const domainUser = User.rehydrate({
       id: 'user-123',
-      username: 'testuser',
+      firstName: 'John',
+      lastName: 'Doe',
       email: 'test@example.com',
       passwordHash: 'hashedPassword',
       refreshTokenHash: 'hashedRefreshToken',
@@ -54,7 +57,8 @@ describe('UserMapper', () => {
 
     expect(persistence).toEqual({
       id: 'user-123',
-      username: 'testuser',
+      first_name: 'John',
+      last_name: 'Doe',
       email: 'test@example.com',
       password_hash: 'hashedPassword',
       refresh_token_hash: 'hashedRefreshToken',
