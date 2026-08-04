@@ -11,6 +11,7 @@ import {
 } from '../../domain/interfaces/token.service';
 import { InvalidRefreshTokenException } from '../../infrastructure/exceptions/invalid-refresh-token.exception';
 import { User } from '../../domain/entities/user.entity';
+import { Role } from '../../domain/enums/role.enum';
 
 describe('RefreshTokenHandler', () => {
   let handler: RefreshTokenHandler;
@@ -50,7 +51,11 @@ describe('RefreshTokenHandler', () => {
 
   it('should successfully refresh access token with valid refresh token', async () => {
     const oldRefreshToken = 'valid-refresh-token';
-    const payload = { userId: 'user-id-1', email: 'john@example.com' };
+    const payload = {
+      userId: 'user-id-1',
+      email: 'john@example.com',
+      role: Role.STUDENT,
+    };
     const mockUser = User.rehydrate({
       id: 'user-id-1',
       firstName: 'john',
@@ -92,6 +97,7 @@ describe('RefreshTokenHandler', () => {
         lastName: mockUser.lastName,
         email: mockUser.email,
         isVerified: mockUser.isVerified,
+        role: mockUser.role,
       },
     });
   });
@@ -100,6 +106,7 @@ describe('RefreshTokenHandler', () => {
     tokenService.verifyRefreshToken.mockResolvedValue({
       userId: 'u-1',
       email: 'a@b.com',
+      role: Role.STUDENT,
     });
     userRepository.findById.mockResolvedValue(null);
 
@@ -123,6 +130,7 @@ describe('RefreshTokenHandler', () => {
     tokenService.verifyRefreshToken.mockResolvedValue({
       userId: 'u-1',
       email: 'john@example.com',
+      role: Role.STUDENT,
     });
     userRepository.findById.mockResolvedValue(mockUser);
     hasher.compare.mockResolvedValue(false);

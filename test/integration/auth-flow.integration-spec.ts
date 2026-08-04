@@ -22,7 +22,7 @@ import { JwtTokenService } from '../../src/modules/auth/infrastructure/services/
 import { UuidV7Generator } from '../../src/shared/infrastructure/services/uuid-v7-generator';
 import { User } from '../../src/modules/auth/domain/entities/user.entity';
 
-import { UserAlreadyExistException } from '../../src/modules/auth/domain/exceptions/user-already-exist.exception';
+import { AlreadyExistDomainException } from '../../src/shared/domain/exceptions/already-exist-domain.exception';
 import { InvalidCredentialsException } from '../../src/modules/auth/domain/exceptions/invalid-credentials.exception';
 import { InvalidRefreshTokenException } from '../../src/modules/auth/infrastructure/exceptions/invalid-refresh-token.exception';
 
@@ -145,7 +145,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     await registerHandler.handle(registerDto);
 
     await expect(registerHandler.handle(registerDto)).rejects.toThrow(
-      UserAlreadyExistException,
+      AlreadyExistDomainException,
     );
   });
 

@@ -78,6 +78,7 @@ describe('LoginHandler', () => {
     expect(tokenService.generateTokens).toHaveBeenCalledWith({
       email: mockUser.email,
       userId: mockUser.id,
+      role: mockUser.role,
     });
     expect(userRepository.save).toHaveBeenCalledWith(mockUser);
     expect(mockUser.refreshTokenHash).toBe('hashed-ref-token');
@@ -90,6 +91,7 @@ describe('LoginHandler', () => {
         lastName: mockUser.lastName,
         email: mockUser.email,
         isVerified: mockUser.isVerified,
+        role: mockUser.role,
       },
     });
   });

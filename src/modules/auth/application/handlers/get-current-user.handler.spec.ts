@@ -4,7 +4,7 @@ import {
   USER_REPOSITORY_TOKEN,
   UserRepository,
 } from '../../domain/interfaces/user-repository';
-import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-dound-domain.exception';
+import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { User } from '../../domain/entities/user.entity';
 
 describe('GetCurrentUserHandler', () => {
@@ -51,6 +51,7 @@ describe('GetCurrentUserHandler', () => {
       lastName: 'Doe',
       email: 'john@example.com',
       isVerified: false,
+      role: 'STUDENT',
     });
   });
 

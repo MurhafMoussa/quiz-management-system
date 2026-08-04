@@ -14,7 +14,7 @@ import {
   ID_GENERATOR_TOKEN,
   IdGenerator,
 } from 'src/shared/domain/interfaces/id-generator';
-import { UserAlreadyExistException } from '../../domain/exceptions/user-already-exist.exception';
+import { AlreadyExistDomainException } from 'src/shared/domain/exceptions/already-exist-domain.exception';
 import { User } from '../../domain/entities/user.entity';
 import { UserRegisteredEvent } from '../../domain/events/user-registered.event';
 import { DomainEventsNames } from 'src/shared/domain/constants/domain-events-names.enum';
@@ -93,6 +93,7 @@ describe('RegisterHandler', () => {
     expect(tokenService.generateTokens).toHaveBeenCalledWith({
       email: registerDto.email,
       userId: 'generated-uuid',
+      role: 'STUDENT',
     });
     expect(hasher.hash).toHaveBeenNthCalledWith(2, 'refresh-token');
     expect(userRepository.save).toHaveBeenCalledWith(expect.any(User));
@@ -109,6 +110,7 @@ describe('RegisterHandler', () => {
         lastName: registerDto.lastName,
         email: registerDto.email,
         isVerified: false,
+        role: 'STUDENT',
       },
     });
   });
@@ -134,7 +136,7 @@ describe('RegisterHandler', () => {
     userRepository.findByEmail.mockResolvedValue(existingUser);
 
     await expect(handler.handle(registerDto)).rejects.toThrow(
-      UserAlreadyExistException,
+      AlreadyExistDomainException,
     );
     expect(userRepository.save).not.toHaveBeenCalled();
   });

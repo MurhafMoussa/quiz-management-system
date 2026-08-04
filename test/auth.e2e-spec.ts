@@ -91,6 +91,7 @@ describe('Auth Endpoints (e2e)', () => {
             lastName: 'Doe',
             email: 'john@example.com',
             isVerified: false,
+            role: 'STUDENT',
           },
         },
       });
@@ -231,6 +232,7 @@ describe('Auth Endpoints (e2e)', () => {
         lastName: 'Doe',
         email: 'john@example.com',
         isVerified: false,
+        role: 'STUDENT',
       });
     });
 
