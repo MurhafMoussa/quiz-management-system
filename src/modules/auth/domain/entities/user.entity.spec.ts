@@ -5,7 +5,8 @@ describe('User Domain Entity', () => {
   it('should create a new user entity using create() and record UserRegisteredEvent', () => {
     const params = {
       id: 'id-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash123',
       refreshTokenHash: undefined,
@@ -14,7 +15,8 @@ describe('User Domain Entity', () => {
     const user = User.create(params);
 
     expect(user.id).toBe(params.id);
-    expect(user.username).toBe(params.username);
+    expect(user.firstName).toBe(params.firstName);
+    expect(user.lastName).toBe(params.lastName);
     expect(user.email).toBe(params.email);
     expect(user.passwordHash).toBe(params.passwordHash);
     expect(user.refreshTokenHash).toBeUndefined();
@@ -26,7 +28,6 @@ describe('User Domain Entity', () => {
     const event = user.domainEvents[0] as UserRegisteredEvent;
     expect(event).toBeInstanceOf(UserRegisteredEvent);
     expect(event.userId).toBe('id-1');
-    expect(event.username).toBe('john');
     expect(event.email).toBe('john@example.com');
   });
 
@@ -36,7 +37,8 @@ describe('User Domain Entity', () => {
 
     const user = User.rehydrate({
       id: 'id-1',
-      username: 'john',
+      firstName: 'john',
+      lastName: 'doe',
       email: 'john@example.com',
       passwordHash: 'hash123',
       refreshTokenHash: 'refresh123',
@@ -55,7 +57,8 @@ describe('User Domain Entity', () => {
     const initialDate = new Date('2024-01-01');
     const user = User.rehydrate({
       id: 'id-1',
-      username: 'oldname',
+      firstName: 'oldfirstName',
+      lastName: 'oldlastName',
       email: 'john@example.com',
       passwordHash: 'oldhash',
       refreshTokenHash: 'oldrefresh',
@@ -63,11 +66,14 @@ describe('User Domain Entity', () => {
       updatedAt: initialDate,
     });
 
-    user.changeUsername('newname');
-    expect(user.username).toBe('newname');
+    user.changeFirstName('newfirstName');
+    expect(user.firstName).toBe('newfirstName');
     expect(user.updatedAt.getTime()).toBeGreaterThanOrEqual(
       initialDate.getTime(),
     );
+
+    user.changeLastName('newlastName');
+    expect(user.lastName).toBe('newlastName');
 
     user.changePassword('newhash');
     expect(user.passwordHash).toBe('newhash');

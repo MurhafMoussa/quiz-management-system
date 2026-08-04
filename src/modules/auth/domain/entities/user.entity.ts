@@ -4,7 +4,8 @@ import { UserRegisteredEvent } from '../events/user-registered.event';
 export class User extends AggregateRoot {
   private constructor(
     public readonly id: string,
-    private _username: string,
+    private _firstName: string,
+    private _lastName: string,
     private _email: string,
     private _passwordHash: string,
     private _refreshTokenHash: string | undefined,
@@ -16,7 +17,8 @@ export class User extends AggregateRoot {
   }
   static create(params: {
     id: string;
-    username: string;
+    firstName: string;
+    lastName: string;
     email: string;
     passwordHash: string;
     refreshTokenHash: string | undefined;
@@ -25,7 +27,8 @@ export class User extends AggregateRoot {
     const now = new Date();
     const user = new User(
       params.id,
-      params.username,
+      params.firstName,
+      params.lastName,
       params.email,
       params.passwordHash,
       params.refreshTokenHash,
@@ -33,15 +36,14 @@ export class User extends AggregateRoot {
       now,
       now,
     );
-    user.recordDomainEvent(
-      new UserRegisteredEvent(params.id, params.username, params.email),
-    );
+    user.recordDomainEvent(new UserRegisteredEvent(params.id, params.email));
 
     return user;
   }
   public static rehydrate(params: {
     id: string;
-    username: string;
+    firstName: string;
+    lastName: string;
     email: string;
     passwordHash: string;
     refreshTokenHash: string | undefined;
@@ -52,7 +54,8 @@ export class User extends AggregateRoot {
   }): User {
     return new User(
       params.id,
-      params.username,
+      params.firstName,
+      params.lastName,
       params.email,
       params.passwordHash,
       params.refreshTokenHash,
@@ -61,8 +64,12 @@ export class User extends AggregateRoot {
       params.updatedAt,
     );
   }
-  get username() {
-    return this._username;
+  get firstName() {
+    return this._firstName;
+  }
+
+  get lastName() {
+    return this._lastName;
   }
 
   get email() {
@@ -81,11 +88,14 @@ export class User extends AggregateRoot {
   get isVerified() {
     return this._isVerified;
   }
-  changeUsername(username: string) {
-    this._username = username;
+  changeFirstName(firstName: string) {
+    this._firstName = firstName;
     this.touch();
   }
-
+  changeLastName(lastName: string) {
+    this._lastName = lastName;
+    this.touch();
+  }
   changePassword(passwordHash: string) {
     this._passwordHash = passwordHash;
     this.touch();
