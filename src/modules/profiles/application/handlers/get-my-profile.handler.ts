@@ -1,54 +1,25 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import {
-  PROFILE_REPOSITORY_TOKEN,
-  type ProfileRepository,
-} from '../../domain/interfaces/profile-repository';
+  USER_REPOSITORY_TOKEN,
+  type UserRepository,
+} from 'src/modules/auth/domain/interfaces/user-repository';
+import { UserMapper } from 'src/modules/auth/infrastructure/mappers/user.mapper';
+import { UserResponseDto } from 'src/shared/application/dtos/user-response.dto';
 
 @Injectable()
 export class GetMyProfileHandler {
   constructor(
-    @Inject(PROFILE_REPOSITORY_TOKEN)
-    private readonly profileRepository: ProfileRepository,
+    @Inject(USER_REPOSITORY_TOKEN)
+    private readonly userRepository: UserRepository,
   ) {}
 
-  async handle(userId: string) {
-    const studentProfile =
-      await this.profileRepository.findStudentProfileByUserId(userId);
-    if (studentProfile) {
-      return {
-        type: 'STUDENT',
-        profile: {
-          id: studentProfile.id,
-          userId: studentProfile.userId,
-          studentIdCode: studentProfile.studentIdCode,
-          gradeLevel: studentProfile.gradeLevel,
-          interests: studentProfile.interests,
-          major: studentProfile.major,
-          createdAt: studentProfile.createdAt,
-          updatedAt: studentProfile.updatedAt,
-        },
-      };
+  async handle(userId: string): Promise<UserResponseDto> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundDomainException({ resourceName: 'User' });
     }
 
-    const teacherProfile =
-      await this.profileRepository.findTeacherProfileByUserId(userId);
-    if (teacherProfile) {
-      return {
-        type: 'TEACHER',
-        profile: {
-          id: teacherProfile.id,
-          userId: teacherProfile.userId,
-          title: teacherProfile.title,
-          bio: teacherProfile.bio,
-          department: teacherProfile.department,
-          subjectSpecialties: teacherProfile.subjectSpecialties,
-          createdAt: teacherProfile.createdAt,
-          updatedAt: teacherProfile.updatedAt,
-        },
-      };
-    }
-
-    throw new NotFoundDomainException({ resourceName: 'Profile' });
+    return UserMapper.toResponse(user);
   }
 }

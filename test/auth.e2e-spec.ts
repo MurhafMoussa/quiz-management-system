@@ -92,6 +92,7 @@ describe('Auth Endpoints (e2e)', () => {
             email: 'john@example.com',
             isVerified: false,
             role: 'STUDENT',
+            profile: null,
           },
         },
       });
@@ -206,7 +207,7 @@ describe('Auth Endpoints (e2e)', () => {
     });
   });
 
-  describe('POST /auth/me', () => {
+  describe('GET /profiles/me', () => {
     it('should return user profile when valid Bearer token is provided', async () => {
       const registerRes = await request(app.getHttpServer())
         .post('/auth/register')
@@ -221,7 +222,7 @@ describe('Auth Endpoints (e2e)', () => {
       const accessToken = registerRes.body.data.accessToken;
 
       const profileRes = await request(app.getHttpServer())
-        .post('/auth/me')
+        .get('/profiles/me')
         .set('Authorization', `Bearer ${accessToken}`);
 
       expect(profileRes.status).toBe(200);
@@ -233,11 +234,12 @@ describe('Auth Endpoints (e2e)', () => {
         email: 'john@example.com',
         isVerified: false,
         role: 'STUDENT',
+        profile: null,
       });
     });
 
     it('should fail with 401 Unauthorized when no authorization header is present', async () => {
-      const response = await request(app.getHttpServer()).post('/auth/me');
+      const response = await request(app.getHttpServer()).get('/profiles/me');
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);

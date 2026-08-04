@@ -3,18 +3,16 @@ import { AuthController } from './auth.controller';
 import { RegisterHandler } from '../../application/handlers/register.handler';
 import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
-import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
 import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
 import { UpdateUserRoleHandler } from '../../application/handlers/update-user-role.handler';
 import { TOKEN_SERVICE_TOKEN } from '../../domain/interfaces/token.service';
-import { Role } from '../../domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let registerHandler: jest.Mocked<RegisterHandler>;
   let loginHandler: jest.Mocked<LoginHandler>;
   let refreshTokenHandler: jest.Mocked<RefreshTokenHandler>;
-  let getCurrentUserHandler: jest.Mocked<GetCurrentUserHandler>;
   let verifyEmailHandler: jest.Mocked<VerifyEmailHandler>;
   let updateUserRoleHandler: jest.Mocked<UpdateUserRoleHandler>;
 
@@ -22,7 +20,6 @@ describe('AuthController', () => {
     registerHandler = { handle: jest.fn() } as any;
     loginHandler = { handle: jest.fn() } as any;
     refreshTokenHandler = { handle: jest.fn() } as any;
-    getCurrentUserHandler = { handle: jest.fn() } as any;
     verifyEmailHandler = { execute: jest.fn() } as any;
     updateUserRoleHandler = { handle: jest.fn() } as any;
 
@@ -32,7 +29,6 @@ describe('AuthController', () => {
         { provide: RegisterHandler, useValue: registerHandler },
         { provide: LoginHandler, useValue: loginHandler },
         { provide: RefreshTokenHandler, useValue: refreshTokenHandler },
-        { provide: GetCurrentUserHandler, useValue: getCurrentUserHandler },
         { provide: VerifyEmailHandler, useValue: verifyEmailHandler },
         { provide: UpdateUserRoleHandler, useValue: updateUserRoleHandler },
         {
@@ -118,28 +114,6 @@ describe('AuthController', () => {
     const result = await controller.refresh(dto);
 
     expect(refreshTokenHandler.handle).toHaveBeenCalledWith('old-ref');
-    expect(result).toEqual(expectedResponse);
-  });
-
-  it('should call getCurrentUserHandler on getCurrentUser()', async () => {
-    const payload = {
-      userId: 'u-1',
-      email: 'john@example.com',
-      role: Role.STUDENT,
-    };
-    const expectedResponse = {
-      id: 'u-1',
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@example.com',
-      isVerified: false,
-      role: Role.STUDENT,
-    };
-    getCurrentUserHandler.handle.mockResolvedValue(expectedResponse);
-
-    const result = await controller.getCurrentUser(payload);
-
-    expect(getCurrentUserHandler.handle).toHaveBeenCalledWith('u-1');
     expect(result).toEqual(expectedResponse);
   });
 

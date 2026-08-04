@@ -3,7 +3,7 @@ import {
   USER_REPOSITORY_TOKEN,
   type UserRepository,
 } from 'src/modules/auth/domain/interfaces/user-repository';
-import { Role } from 'src/modules/auth/domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import {
   ID_GENERATOR_TOKEN,

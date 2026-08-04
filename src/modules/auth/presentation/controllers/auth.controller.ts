@@ -16,15 +16,12 @@ import { RefreshTokenDto } from '../../application/dtos/refresh-token.dto';
 import { RegisterUserDto } from '../../application/dtos/register-user.dto';
 import { UpdateUserRoleDto } from '../../application/dtos/update-user-role.dto';
 import { VerifyEmailDto } from '../../application/dtos/verify-email.dto';
-import { GetCurrentUserHandler } from '../../application/handlers/get-current-user.handler';
 import { LoginHandler } from '../../application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../application/handlers/refresh-token.handler';
 import { RegisterHandler } from '../../application/handlers/register.handler';
 import { UpdateUserRoleHandler } from '../../application/handlers/update-user-role.handler';
 import { VerifyEmailHandler } from '../../application/handlers/verify-email.handler';
-import { Role } from '../../domain/enums/role.enum';
-import type { TokenPayload } from '../../domain/interfaces/token-payload';
-import { CurrentUser } from '../decorators/current-user.decorator';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { Roles } from '../decorators/roles.decorator';
 import { AuthGuard } from '../guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -36,7 +33,6 @@ export class AuthController {
     private readonly registerHandler: RegisterHandler,
     private readonly loginHandler: LoginHandler,
     private readonly refreshTokenHandler: RefreshTokenHandler,
-    private readonly getCurrentUserHandler: GetCurrentUserHandler,
     private readonly verifyEmailHandler: VerifyEmailHandler,
     private readonly updateUserRoleHandler: UpdateUserRoleHandler,
   ) {}
@@ -56,14 +52,6 @@ export class AuthController {
   @ResponseMessage('auth.TOKEN_REFRESHED_SUCCESSFULLY')
   async refresh(@Body() dto: RefreshTokenDto) {
     return this.refreshTokenHandler.handle(dto.refreshToken);
-  }
-  @Post('me')
-  @HttpCode(HttpStatus.OK)
-  @ResponseMessage('auth.PROFILE_RETRIEVED_SUCCESSFULLY')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  async getCurrentUser(@CurrentUser() payload: TokenPayload) {
-    return this.getCurrentUserHandler.handle(payload.userId);
   }
 
   @Post('verify-email')

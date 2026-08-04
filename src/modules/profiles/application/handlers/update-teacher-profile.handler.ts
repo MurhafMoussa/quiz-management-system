@@ -1,5 +1,5 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { Role } from 'src/modules/auth/domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import {
   PROFILE_REPOSITORY_TOKEN,

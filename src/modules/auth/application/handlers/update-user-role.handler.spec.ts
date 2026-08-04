@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { User } from '../../domain/entities/user.entity';
-import { Role } from '../../domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { USER_REPOSITORY_TOKEN } from '../../domain/interfaces/user-repository';
 import { UpdateUserRoleHandler } from './update-user-role.handler';
 

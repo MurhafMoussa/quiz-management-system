@@ -10,6 +10,7 @@ export class PrismaUserRepository implements UserRepository {
   async findById(userId: string): Promise<User | null> {
     const rawUser = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
 
     if (!rawUser) return null;
@@ -20,6 +21,7 @@ export class PrismaUserRepository implements UserRepository {
   async findByEmail(email: string): Promise<User | null> {
     const rawUser = await this.prisma.user.findUnique({
       where: { email },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
 
     if (!rawUser) return null;
@@ -34,6 +36,7 @@ export class PrismaUserRepository implements UserRepository {
       where: { id: user.id },
       create: data,
       update: data,
+      include: { StudentProfile: true, TeacherProfile: true },
     });
 
     return UserMapper.toDomain(savedUser);

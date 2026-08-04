@@ -2,7 +2,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { USER_REPOSITORY_TOKEN } from 'src/modules/auth/domain/interfaces/user-repository';
 import { User } from 'src/modules/auth/domain/entities/user.entity';
-import { Role } from 'src/modules/auth/domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { ID_GENERATOR_TOKEN } from 'src/shared/domain/interfaces/id-generator';
 import { ProfileAlreadyExistsException } from '../../domain/exceptions/profile-already-exists.exception';

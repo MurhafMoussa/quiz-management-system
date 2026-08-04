@@ -1,6 +1,6 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Role } from 'src/modules/auth/domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
 import { StudentProfile } from '../../domain/entities/student-profile.entity';
 import { PROFILE_REPOSITORY_TOKEN } from '../../domain/interfaces/profile-repository';

@@ -1,6 +1,6 @@
 import * as constants from 'src/shared/domain/constants/validation-constants';
 import { z } from 'zod';
-import { Role } from '../../domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 export const usernameSchema = z
   .string({ error: 'validation.FIELD_REQUIRED' })

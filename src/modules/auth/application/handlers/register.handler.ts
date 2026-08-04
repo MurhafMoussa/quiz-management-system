@@ -16,7 +16,8 @@ import {
   USER_REPOSITORY_TOKEN,
   type UserRepository,
 } from '../../domain/interfaces/user-repository';
-import { AuthResponseDto } from '../dtos/auth-response.dto';
+import { UserMapper } from '../../infrastructure/mappers/user.mapper';
+import { AuthResponseDto } from 'src/shared/application/dtos/user-response.dto';
 import { RegisterUserDto } from '../dtos/register-user.dto';
 
 @Injectable()
@@ -62,14 +63,7 @@ export class RegisterHandler {
     return {
       refreshToken,
       accessToken,
-      user: {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        isVerified: user.isVerified,
-        role: user.role,
-      },
+      user: UserMapper.toResponse(user),
     };
   }
 }

@@ -1,6 +1,6 @@
 import { User } from './user.entity';
 import { UserRegisteredEvent } from '../events/user-registered.event';
-import { Role } from '../enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 describe('User Domain Entity', () => {
   it('should create a new user entity using create() and record UserRegisteredEvent', () => {

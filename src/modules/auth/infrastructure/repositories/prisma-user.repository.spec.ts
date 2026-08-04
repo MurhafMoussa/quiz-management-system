@@ -51,6 +51,7 @@ describe('PrismaUserRepository', () => {
 
     expect(prismaService.user.findUnique).toHaveBeenCalledWith({
       where: { id: 'u-1' },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
     expect(result?.id).toBe('u-1');
@@ -80,6 +81,7 @@ describe('PrismaUserRepository', () => {
 
     expect(prismaService.user.findUnique).toHaveBeenCalledWith({
       where: { email: 'john@example.com' },
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
   });
@@ -115,6 +117,7 @@ describe('PrismaUserRepository', () => {
       where: { id: domainUser.id },
       create: expect.any(Object),
       update: expect.any(Object),
+      include: { StudentProfile: true, TeacherProfile: true },
     });
     expect(result).toBeInstanceOf(User);
     expect(result.id).toBe('u-1');

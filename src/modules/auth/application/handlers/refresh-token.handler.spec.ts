@@ -11,7 +11,7 @@ import {
 } from '../../domain/interfaces/token.service';
 import { InvalidRefreshTokenException } from '../../infrastructure/exceptions/invalid-refresh-token.exception';
 import { User } from '../../domain/entities/user.entity';
-import { Role } from '../../domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 describe('RefreshTokenHandler', () => {
   let handler: RefreshTokenHandler;
@@ -98,6 +98,7 @@ describe('RefreshTokenHandler', () => {
         email: mockUser.email,
         isVerified: mockUser.isVerified,
         role: mockUser.role,
+        profile: null,
       },
     });
   });

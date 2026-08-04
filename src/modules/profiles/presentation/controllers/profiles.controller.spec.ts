@@ -8,7 +8,7 @@ import { GetTeacherProfileHandler } from '../../application/handlers/get-teacher
 import { UpdateStudentProfileHandler } from '../../application/handlers/update-student-profile.handler';
 import { UpdateTeacherProfileHandler } from '../../application/handlers/update-teacher-profile.handler';
 import { TOKEN_SERVICE_TOKEN } from 'src/modules/auth/domain/interfaces/token.service';
-import { Role } from 'src/modules/auth/domain/enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 
 describe('ProfilesController', () => {
   let controller: ProfilesController;

@@ -1,8 +1,10 @@
 import { AggregateRoot } from 'src/shared/domain/entities/aggrigate-root';
-import { Role } from '../enums/role.enum';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { UserRegisteredEvent } from '../events/user-registered.event';
 
 export class User extends AggregateRoot {
+  public profile?: any;
+
   private constructor(
     public readonly id: string,
     private _firstName: string,

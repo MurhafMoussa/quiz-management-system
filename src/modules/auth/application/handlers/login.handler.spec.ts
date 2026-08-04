@@ -92,6 +92,7 @@ describe('LoginHandler', () => {
         email: mockUser.email,
         isVerified: mockUser.isVerified,
         role: mockUser.role,
+        profile: null,
       },
     });
   });

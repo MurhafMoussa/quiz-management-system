@@ -1,62 +1,85 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundDomainException } from 'src/shared/domain/exceptions/not-found-domain.exception';
-import { StudentProfile } from '../../domain/entities/student-profile.entity';
-import { TeacherProfile } from '../../domain/entities/teacher-profile.entity';
-import { PROFILE_REPOSITORY_TOKEN } from '../../domain/interfaces/profile-repository';
+import { USER_REPOSITORY_TOKEN } from 'src/modules/auth/domain/interfaces/user-repository';
+import { User } from 'src/modules/auth/domain/entities/user.entity';
+import { Role } from 'src/shared/domain/enums/role.enum';
 import { GetMyProfileHandler } from './get-my-profile.handler';
 
 describe('GetMyProfileHandler', () => {
   let handler: GetMyProfileHandler;
-  let profileRepoMock: any;
+  let userRepoMock: any;
 
   beforeEach(async () => {
-    profileRepoMock = {
-      findStudentProfileByUserId: jest.fn(),
-      findTeacherProfileByUserId: jest.fn(),
+    userRepoMock = {
+      findById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GetMyProfileHandler,
-        { provide: PROFILE_REPOSITORY_TOKEN, useValue: profileRepoMock },
+        { provide: USER_REPOSITORY_TOKEN, useValue: userRepoMock },
       ],
     }).compile();
 
     handler = module.get<GetMyProfileHandler>(GetMyProfileHandler);
   });
 
-  it('should return student profile if user is a student', async () => {
-    const student = StudentProfile.create({
+  it('should return user and student profile if user is a student and has a profile', async () => {
+    const user = User.rehydrate({
+      id: 'u-1',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john@example.com',
+      passwordHash: 'hash',
+      refreshTokenHash: undefined,
+      isVerified: true,
+      role: Role.STUDENT,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    user.profile = {
       id: 'sp-1',
       userId: 'u-1',
       studentIdCode: 'STU1',
-    });
-    profileRepoMock.findStudentProfileByUserId.mockResolvedValue(student);
+      gradeLevel: 'Freshman',
+      interests: [],
+      major: 'CS',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    userRepoMock.findById.mockResolvedValue(user);
 
     const result = await handler.handle('u-1');
 
-    expect(result.type).toBe('STUDENT');
-    expect(result.profile.id).toBe('sp-1');
+    expect(result.id).toBe('u-1');
+    expect(result.role).toBe(Role.STUDENT);
+    expect(result.profile).toBeDefined();
+    expect(result.profile!.id).toBe('sp-1');
   });
 
-  it('should return teacher profile if user is a teacher', async () => {
-    profileRepoMock.findStudentProfileByUserId.mockResolvedValue(null);
-    const teacher = TeacherProfile.create({
-      id: 'tp-1',
-      userId: 'u-2',
-      title: 'Dr.',
+  it('should return user and null profile if user has no profile yet', async () => {
+    const user = User.rehydrate({
+      id: 'u-2',
+      firstName: 'Jane',
+      lastName: 'Doe',
+      email: 'jane@example.com',
+      passwordHash: 'hash',
+      refreshTokenHash: undefined,
+      isVerified: true,
+      role: Role.STUDENT,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
-    profileRepoMock.findTeacherProfileByUserId.mockResolvedValue(teacher);
+    userRepoMock.findById.mockResolvedValue(user);
 
     const result = await handler.handle('u-2');
 
-    expect(result.type).toBe('TEACHER');
-    expect(result.profile.id).toBe('tp-1');
+    expect(result.id).toBe('u-2');
+    expect(result.profile).toBeNull();
   });
 
-  it('should throw NotFoundDomainException if no profile is found', async () => {
-    profileRepoMock.findStudentProfileByUserId.mockResolvedValue(null);
-    profileRepoMock.findTeacherProfileByUserId.mockResolvedValue(null);
+  it('should throw NotFoundDomainException if user is not found', async () => {
+    userRepoMock.findById.mockResolvedValue(null);
 
     await expect(handler.handle('u-3')).rejects.toThrow(
       NotFoundDomainException,

@@ -111,6 +111,7 @@ describe('RegisterHandler', () => {
         email: registerDto.email,
         isVerified: false,
         role: 'STUDENT',
+        profile: null,
       },
     });
   });

@@ -7,7 +7,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RegisterHandler } from '../../src/modules/auth/application/handlers/register.handler';
 import { LoginHandler } from '../../src/modules/auth/application/handlers/login.handler';
 import { RefreshTokenHandler } from '../../src/modules/auth/application/handlers/refresh-token.handler';
-import { GetCurrentUserHandler } from '../../src/modules/auth/application/handlers/get-current-user.handler';
+import { GetMyProfileHandler } from '../../src/modules/profiles/application/handlers/get-my-profile.handler';
 
 import {
   USER_REPOSITORY_TOKEN,
@@ -30,7 +30,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
   let registerHandler: RegisterHandler;
   let loginHandler: LoginHandler;
   let refreshTokenHandler: RefreshTokenHandler;
-  let getCurrentUserHandler: GetCurrentUserHandler;
+  let getMyProfileHandler: GetMyProfileHandler;
 
   const inMemoryUsers = new Map<string, User>();
 
@@ -68,7 +68,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
         RegisterHandler,
         LoginHandler,
         RefreshTokenHandler,
-        GetCurrentUserHandler,
+        GetMyProfileHandler,
         { provide: USER_REPOSITORY_TOKEN, useValue: inMemoryRepository },
         { provide: HASHER_TOKEN, useClass: ArgonPasswordHasher },
         { provide: TOKEN_SERVICE_TOKEN, useClass: JwtTokenService },
@@ -79,9 +79,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     registerHandler = module.get<RegisterHandler>(RegisterHandler);
     loginHandler = module.get<LoginHandler>(LoginHandler);
     refreshTokenHandler = module.get<RefreshTokenHandler>(RefreshTokenHandler);
-    getCurrentUserHandler = module.get<GetCurrentUserHandler>(
-      GetCurrentUserHandler,
-    );
+    getMyProfileHandler = module.get<GetMyProfileHandler>(GetMyProfileHandler);
   });
 
   beforeEach(() => {
@@ -120,7 +118,7 @@ describe('Auth Flow Integration (Handlers + Security Services)', () => {
     expect(loginResult.user.id).toBe(registerResult.user.id);
 
     // 3. Get Current User Profile
-    const profile = await getCurrentUserHandler.handle(loginResult.user.id);
+    const profile = await getMyProfileHandler.handle(loginResult.user.id);
     expect(profile.firstName).toBe('Alice');
     expect(profile.lastName).toBe('Smith');
 
